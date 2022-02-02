@@ -73,21 +73,6 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " Toggle
 nnoremap <silent> <C-b> :NERDTreeToggle<CR>
 
-"Integrated Terminal Toggle
-" open new split panes to right and below
-set splitright
-set splitbelow
-" turn terminal to normal mode with escape
-tnoremap <Esc> <C-\><C-n>
-" start terminal in insert mode
-au BufEnter * if &buftype == 'terminal' | :startinsert | endif
-" open terminal on ctrl+n
-function! OpenTerminal()
-  split term://zsh
-  resize 10
-endfunction
-nnoremap <c-n> :call OpenTerminal()<CR>
-
 "fuzzyfinder
 nnoremap <C-p> :FZF<CR>
 let g:fzf_action = {
@@ -100,7 +85,7 @@ let g:fzf_action = {
 lua << EOF
 -- lspconfig
 local nvim_lsp = require('lspconfig')
-local servers = { 'pylsp', 'html'}
+local servers = { 'pylsp', 'html', 'cssls', 'tsserver'}
 
 local on_attach = function(client, bufnr)
     local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -128,7 +113,7 @@ end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
-local servers = { 'pylsp', 'html'}
+local servers = { 'pylsp', 'html', 'cssls', 'tsserver'}
 for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {
         capabilities = capabilities,
@@ -230,3 +215,7 @@ nnoremap <silent> <Leader><Space> :nohlsearch<CR>
 
 "edit zsh rc
 :nmap <Leader>z :e ~/.zshrc 
+
+"remap emmet to ,,
+let g:user_emmet_leader_key=','
+
