@@ -35,6 +35,7 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'onsails/lspkind-nvim'
+Plug 'ap/vim-css-color'
 call plug#end()
 
 " Global config Section
