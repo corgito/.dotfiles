@@ -1,0 +1,32 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/nicolaihaddal/.emacs.d/" . "auto-save-list/")
+ ("/Users/nicolaihaddal/" . ".emacs.d/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/Users/nicolaihaddal/.emacs.d/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "config.org"
+ "init.el"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/Users/nicolaihaddal/.emacs.d/" (25123 29358 91480 568000) "config.org~" "elpa/" "init.el" "url/" "auto-save-list/" "config.el" "#configuration.org#" "config.org" "init.el~" "../" "./")
+
+ ("/Users/nicolaihaddal/.emacs.d/auto-save-list/" (25123 28352 556276 739000) ".saves-77014-Nicolais-Air~" ".saves-42191-Nicolais-Air~" "../" "./")
+
+ ("/Users/" (25088 15363 0 0) "nicolaihaddal/" "work/" "postgres/" "Shared/" ".localized" "../" "./")
+
+ ("/Users/nicolaihaddal/" (25123 26603 410551 985000) "src/" "tmux-256color.terminfo" "git/" ".zsh_sessions/" ".viminfo" ".bash_history" "#test.html#" ".gitconfig" "Games/" "test.sh" ".cache/" ".python_history" "Downloads/" ".oh-my-zsh/" ".gem/" ".fzf/" ".hyper.js" ".vscode/" ".tmux/" "pingtest" ".pyenv/" "Documents/" ".npm/" "Splice/" "email.docx" ".Trash/" ".rubies/" "Dropbox/" "tmux.terminfo" "chimmy.txt" "Applications/" "Movies/" ".ssh/" "Scripts/" "foo" ".hyper_plugins/" ".dropbox/" ".fzf.bash" "Public/" ".fzf.zsh" "Exercism/" ".vuescanrc" "terminfo" ".cups/" ".pgadmin/" ".emacs.d/" ".dotfiles/" "output.csv" ".lesshst" ".matplotlib/" "Library/" "Desktop/" "#test.org#" "xterm-256color-italic.terminfo" ".zsh_history" "ctc1_week42.xlsx" ".bundle/" ".zprofile" ".zcompdump-Nicolai’s MacBook Air-5.8" "typescript" "Pictures/" "Creative Cloud Files/" ".NERDTreeBookmarks" ".local/" "OneDrive/" ".adobe/" ".zshrc" "Plugins/" ".zshrc.pre-oh-my-zsh" ".bashrc" "PythonProjects/" "email.html" ".wget-hsts" "TUTORIAL~" ".CFUserTextEncoding" ".tmux.conf" "dotfiles/" "html-boilerplate/" "nltk_data/" ".DS_Store" "something.csv" ".terminfo/" ".vim/" "TUTORIAL" "repos/" "Music/" "vscode_wiki/" ".config/" "ShellScripts/" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

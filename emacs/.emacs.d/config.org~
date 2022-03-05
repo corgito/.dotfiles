@@ -1,0 +1,79 @@
+* Terminal
+** Setting default shell: ZSH
+Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
+   #+begin_src emacs-lisp
+     (defvar my-term-shell "/bin/zsh")
+     (defadvice ansi-term (before force-bash)
+       (interactive (list my-term-shell)))
+     (ad-activate 'ansi-term)
+     (global-set-key (kbd "<M-return>") 'ansi-term)
+   #+end_src
+
+* Aliases
+** Yes/Or/No
+   Simple y/or/n substiution for yes/or/no prompts
+   #+begin_src emacs-lisp
+    (defalias 'yes-or-no-p 'y-or-n-p)
+   #+end_src
+
+* Visual and quality of life improvements
+** No toolbar/menubar/scrollbar
+   #+begin_src emacs-lisp
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+   #+end_src
+** Inhibit default splashcreen
+   #+begin_src emacs-lisp
+     (setq inhibit-startup-message t)
+   #+end_src
+
+** Logical scrolling
+   More intuitive scrolling behavior when using C+n
+   #+begin_src emacs-lisp
+     (setq scroll-conservatively 100)
+   #+end_src
+** Turn off the bell
+   #+begin_src emacs-lisp
+     (setq ring-bell-function 'ignore)
+   #+end_src
+** Highlight current line
+   #+begin_src emacs-lisp
+     (when window-system (global-hl-line-mode t))
+   #+end_src
+** Prettify symbols
+   #+begin_src emacs-lisp
+     (when window-system(global-prettify-symbols-mode t))
+   #+end_src
+* Org-mode
+** Snippets expansion fix
+I honestly don't know why I need this yet. But this fix will make snippet expansion work.
+#+begin_src emacs-lisp
+  (when (version<= "9.2" (org-version))
+    (require 'org-tempo))
+#+end_src
+** Org-bullets
+   #+begin_src emacs-lisp
+     (use-package org-bullets
+       :ensure t
+       :config
+       (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+   #+end_src
+* Packages
+** Visual improvements
+*** Which-key
+Which-key provides a helpful context menu whenever chords are engaged.
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :init
+    (which-key-mode))
+#+end_src
+*** Beacon
+    Beacon shows you where your cursor is located when you switch to a buffer.
+    #+begin_src emacs-lisp
+      (use-package beacon
+	:ensure t
+	:init
+	(beacon-mode 1))
+    #+end_src
