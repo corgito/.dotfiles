@@ -103,3 +103,53 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	:bind
 	("M-x" . smex))
     #+end_src
+** avy
+   #+begin_src emacs-lisp 
+     (use-package avy
+       :ensure t
+       :bind
+       ("M-s" . avy-goto-char))
+   #+end_src
+** rainbow
+   #+begin_src emacs-lisp
+     (use-package rainbow-mode
+       :ensure t
+       :init (rainbow-mode 1))
+   #+end_src
+** switch-window
+   Better window switching.
+   #+begin_src emacs-lisp
+     (use-package switch-window
+       :ensure t
+       :config
+	 (setq switch-window-input-style 'minibuffer)
+	 (setq switch-window-increase 4)
+	 (setq switch-window-threshold 2)
+	 (setq switch-window-shortcut-style 'qwerty)
+	 (setq switch-window-qwerty-shortcuts
+	     '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
+       :bind
+	 ([remap other-window] . switch-window))
+   #+end_src
+* Buffers
+** enable ibuffer
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "C-x b") 'ibuffer)
+   #+end_src
+   
+* Custom functions
+** config edit/reload
+*** edit
+   #+begin_src emacs-lisp
+     (defun config-visit()
+       (interactive)
+       (find-file "~/.emacs.d/config.org"))
+     (global-set-key (kbd "C-c e") 'config-visit)
+   #+end_src
+*** reload
+    #+begin_src emacs-lisp
+      (defun config-reload ()
+	(interactive)
+	(org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+      (global-set-key (kbd "C-c r") 'config-reload)
+    #+end_src
