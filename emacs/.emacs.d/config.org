@@ -8,20 +8,24 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
      (ad-activate 'ansi-term)
      (global-set-key (kbd "<M-return>") 'ansi-term)
    #+end_src
-
+   
 * Aliases
 ** Yes/Or/No
    Simple y/or/n substiution for yes/or/no prompts
    #+begin_src emacs-lisp
     (defalias 'yes-or-no-p 'y-or-n-p)
    #+end_src
-
 * Visual and quality of life improvements
 ** No toolbar/menubar/scrollbar
    #+begin_src emacs-lisp
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+   #+end_src
+** Display the time
+   #+begin_src emacs-lisp
+     (setq display-time-24hr-format t)
+     (display-time-mode 1)
    #+end_src
 ** Inhibit default splashcreen
    #+begin_src emacs-lisp
@@ -45,6 +49,81 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
    #+begin_src emacs-lisp
      (when window-system(global-prettify-symbols-mode t))
    #+end_src
+** Window-splitting
+   Custom function for following split windows
+   #+begin_src emacs-lisp
+     (defun split-and-follow-horizontally ()
+       (interactive)
+       (split-window-below)
+       (balance-windows)
+       (other-window 1))
+     (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+
+     (defun split-and-follow-vertically ()
+       (interactive)
+       (split-window-right)
+       (balance-windows)
+       (other-window 1))
+     (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+   #+end_src
+** Subword navigation
+   Navigate to first uppercase within words for e.g. camelcase words
+   #+begin_src emacs-lisp
+     (global-subword-mode 1)
+   #+end_src
+** electric parentheses
+   auto-complete parentheses
+   #+begin_src emacs-lisp
+     (setq electric-pair-pairs '(
+				(?\{ . ?\})
+				(?\( . ?\))
+				(?\[ . ?\])
+				(?\" . ?\")
+				))
+     (electric-pair-mode t)
+   #+end_src
+** Vim CIW substitute
+   Mimic the beloved CIW command with C-c w w
+   #+begin_src emacs-lisp
+     (defun kill-whole-word()
+       (interactive)
+       (backward-word)
+       (kill-word 1))
+     (global-set-key (kbd "C-c w w") 'kill-whole-word)
+   #+end_src
+** Show lines and columns
+   #+begin_src emacs-lisp
+     (line-number-mode 1)
+     (column-number-mode 1)
+   #+end_src
+** Spacemacs modeline
+   #+begin_src emacs-lisp
+     (use-package spaceline
+       :ensure t
+       :config
+       (require 'spaceline-config)
+       (setq powerline-default-separator (quote arrow))
+       (spaceline-spacemacs-theme))
+   #+end_src
+** diminish
+   #+begin_src emacs-lisp
+     (use-package diminish
+       :ensure t
+       :init
+       (diminish 'hungry-delete-mode)
+       (diminish 'beacon-mode)
+       (diminish 'which-key-mode)
+       (diminish 'rainbow-mode)
+       (diminish 'subword-mode))
+   #+end_src
+** Set global font-size
+   #+begin_src emacs-lisp
+     (set-face-attribute 'default nil :height 165)
+   #+end_src
+** Line wrapping and word breaking
+   #+begin_src emacs-lisp
+     (setq org-startup-truncated nil)
+   #+end_src
 * Org-mode
 ** Snippets expansion fix
 I honestly don't know why I need this yet. But this fix will make snippet expansion work.
@@ -58,6 +137,26 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
        :ensure t
        :config
        (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+   #+end_src
+** Global keybindings
+   Global keybindings for org-mode for org-store-link, agenda, and capture
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "C-c l") #'org-store-link)
+     (global-set-key (kbd "C-c a") #'org-agenda)
+     (global-set-key (kbd "C-c c") #'org-capture)
+   #+end_src
+** Multi-state workflow
+   #+begin_src emacs-lisp
+     (setq org-todo-keywords
+	   '((sequence "TODO" "WAITING" "|" "DONE" "DELEGATED")))
+   #+end_src
+** Org-roam
+   #+begin_src emacs-lisp
+     (use-package org-roam
+       :ensure t
+       :config
+       (setq org-roam-directory (file-truename "~/Documents/org-roam"))
+       (org-roam-db-autosync-mode))
    #+end_src
 * Packages
 ** Visual improvements
@@ -77,7 +176,16 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	:init
 	(beacon-mode 1))
     #+end_src
-
+** Dashboard
+   #+begin_src emacs-lisp
+     (use-package dashboard
+       :ensure t
+       :config
+       (dashboard-setup-startup-hook)
+       (setq dashboard-items '((recents . 10)))
+       (setq dashboard-startup-banner "~/small_lain.png")
+       (setq dashboard-banner-logo-title "Hello Nicolai"))
+   #+end_src
 ** IDO
 *** Enable IDO
    #+begin_src emacs-lisp
@@ -131,6 +239,42 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :bind
 	 ([remap other-window] . switch-window))
    #+end_src
+** hungry-delete
+   Hungry delete whitespace
+   #+begin_src emacs-lisp
+     (use-package hungry-delete
+       :ensure t
+       :config (global-hungry-delete-mode))
+   #+end_src
+** sudo-edit
+   Edit 
+   #+begin_src emacs-lisp
+     (use-package sudo-edit
+       :ensure t
+       )
+   #+end_src
+** rainbow-delimiters
+   #+begin_src emacs-lisp
+     (use-package rainbow-delimiters
+       :ensure t
+       :init
+       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+   #+end_src
+** all-the-icons
+   #+begin_src emacs-lisp
+     (use-package all-the-icons
+       :ensure t
+       :if (display-graphic-p))
+
+   #+end_src
+** company
+   Company mode is an extension that allows for autocompletion.
+   #+begin_src emacs-lisp
+     (use-package company
+       :ensure t
+       :init
+       (add-hook 'after-init-hook 'global-company-mode))
+   #+end_src
 * Buffers
 ** enable ibuffer
    #+begin_src emacs-lisp
@@ -153,3 +297,14 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	(org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
       (global-set-key (kbd "C-c r") 'config-reload)
     #+end_src
+** Yank whole line
+   #+begin_src emacs-lisp
+     (defun copy-whole-line()
+       (interactive)
+       (save-excursion
+	 (kill-new
+	  (buffer-substring
+	   (point-at-bol)
+	   (point-at-eol)))))
+     (global-set-key (kbd "C-c w l") 'copy-whole-line)
+   #+end_src
