@@ -150,6 +150,15 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
      (setq org-todo-keywords
 	   '((sequence "TODO" "WAITING" "|" "DONE" "DELEGATED")))
    #+end_src
+** Timestamps for closed todo items
+   #+begin_src emacs-lisp
+     (setq org-log-done 'time)
+   #+end_src
+** Set directory for org-capture
+   #+begin_src emacs-lisp
+     (setq org-directory "~/Documents/Notes")
+     (setq org-default-notes-file (concat org-directory "/notes.org"))
+   #+end_src
 ** Org-roam
    #+begin_src emacs-lisp
      (use-package org-roam
