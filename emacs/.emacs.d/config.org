@@ -178,6 +178,7 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
        (setq org-roam-directory (file-truename "~/Documents/org-roam"))
        (org-roam-db-autosync-mode))
    #+end_src
+
 * Packages
 ** Visual improvements
 *** Which-key
@@ -250,7 +251,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
    #+begin_src emacs-lisp
      (use-package rainbow-mode
        :ensure t
-       :init (rainbow-mode 1))
+       :init (add-hook 'prog-mode-hook 'rainbow-mode))
    #+end_src
 ** switch-window
    Better window switching.
@@ -310,6 +311,26 @@ Which-key provides a helpful context menu whenever chords are engaged.
      (projectile-mode +1)
      (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+   #+end_src
+** swiper
+   #+begin_src emacs-lisp
+     (use-package swiper
+       :ensure t
+       :bind ("C-s" . swiper))
+   #+end_src
+** Multiple Cursors
+   Select multiple instances of the same selection. Super useful for replacing variables.
+   #+begin_src emacs-lisp
+     (use-package multiple-cursors
+      :ensure t
+      :bind ("C-c q" . 'mark-next-like-this))
+#+end_src
+** expand-region
+   Expand your selection by region with C-q! 
+   #+begin_src emacs-lisp
+     (use-package expand-region
+       :ensure t
+       :bind ("C-q" . er/expand-region))
    #+end_src
 * Buffers
 ** enable ibuffer
