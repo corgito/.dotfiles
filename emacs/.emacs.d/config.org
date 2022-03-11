@@ -75,11 +75,11 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
    auto-complete parentheses
    #+begin_src emacs-lisp
      (setq electric-pair-pairs '(
-				(?\{ . ?\})
-				(?\( . ?\))
-				(?\[ . ?\])
-				(?\" . ?\")
-				))
+				    (?\{ . ?\})
+				    (?\( . ?\))
+				    (?\[ . ?\])
+				    (?\" . ?\")
+				    ))
      (electric-pair-mode t)
    #+end_src
 ** Vim CIW substitute
@@ -123,6 +123,17 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
 ** Line wrapping and word breaking
    #+begin_src emacs-lisp
      (setq org-startup-truncated nil)
+   #+end_src
+** Auto-dark/light theme
+   Note this will only work with Emacs plus. Detect MacOS dark/light status and apply appropriate theme.
+   #+begin_src emacs-lisp
+     (defun my/apply-theme (appearance)
+       "Load theme, taking current system APPEARANCE into consideration."
+       (mapc #'disable-theme custom-enabled-themes)
+       (pcase appearance
+	 ('light (load-theme 'spacemacs-light t))
+	 ('dark (load-theme 'spacemacs-dark t))))
+     (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
    #+end_src
 * Org-mode
 ** Snippets expansion fix
@@ -191,7 +202,8 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :ensure t
        :config
        (dashboard-setup-startup-hook)
-       (setq dashboard-items '((recents . 10)))
+       (setq dashboard-items '((recents . 5)
+			       (agenda . 5)))
        (setq dashboard-startup-banner "~/small_lain.png")
        (setq dashboard-banner-logo-title "Hello Nicolai"))
    #+end_src
@@ -284,6 +296,14 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :init
        (add-hook 'after-init-hook 'global-company-mode))
    #+end_src
+** projectile
+   #+begin_src emacs-lisp
+     (use-package projectile
+       :ensure t)
+     (projectile-mode +1)
+     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+   #+end_src
 * Buffers
 ** enable ibuffer
    #+begin_src emacs-lisp
@@ -317,3 +337,9 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	   (point-at-eol)))))
      (global-set-key (kbd "C-c w l") 'copy-whole-line)
    #+end_src
+   
+* Diary
+  Set a different directory for the diary file.
+  #+begin_src emacs-lisp
+    (setq diary-file "~/Documents/diaryfile")
+  #+end_src
