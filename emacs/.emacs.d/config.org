@@ -345,8 +345,27 @@ Which-key provides a helpful context menu whenever chords are engaged.
      (global-set-key (kbd "C-c w l") 'copy-whole-line)
    #+end_src
    
+** Insert elisp in org mode
+   #+begin_src emacs-lisp
+     (fset 'insertelisporg
+	(kmacro-lambda-form [?< ?\C-d ?s tab ?e ?m ?a ?c ?s ?- ?l ?i ?s ?p ?\C-n ?\C-c ?\'] 0 "%d"))
+     (global-set-key (kbd "<f8>") 'insertelisporg)
+   #+end_src   
 * Diary
   Set a different directory for the diary file.
   #+begin_src emacs-lisp
     (setq diary-file "~/Documents/diaryfile")
   #+end_src
+
+* Word processing
+
+** Flyspell configuration
+   Spell-checking with flyspell. Enable for all text modes.
+   #+begin_src emacs-lisp
+     (dolist (hook '(text-mode-hook))
+       (add-hook hook (lambda () (flyspell-mode 1))))
+     (eval-after-load "flyspell"
+       '(progn
+	  (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+	  (define-key flyspell-mouse-map [mouse-3] #'undefined)))
+   #+end_src
