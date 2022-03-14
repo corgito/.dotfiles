@@ -175,7 +175,7 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
      (use-package org-roam
        :ensure t
        :config
-       (setq org-roam-directory (file-truename "~/Documents/org-roam"))
+       (setq org-roam-directory (file-truename "~/Dropbox/org-roam"))
        (org-roam-db-autosync-mode))
    #+end_src
 
