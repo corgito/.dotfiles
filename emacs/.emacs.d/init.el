@@ -20,9 +20,12 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#212526" "#ff4b4b" "#b4fa70" "#fce94f" "#729fcf" "#e090d7" "#8cc4ff" "#eeeeec"])
- '(custom-enabled-themes '(spacemacs-light spacemacs-dark))
+ '(auto-dark--allow-osascript t)
+ '(auto-dark--dark-theme 'spacemacs-dark)
+ '(auto-dark--light-theme 'spacemacs-light)
+ '(custom-enabled-themes '(spacemacs-light))
  '(custom-safe-themes
-   '("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
+   '("f8165eb2a2223c1254a1725dfe169ebd5a35deab2cae3d36e76e507034f23df6" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
  '(hl-todo-keyword-faces
    '(("TODO" . "#dc752f")
      ("NEXT" . "#dc752f")
@@ -43,7 +46,7 @@
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
  '(package-selected-packages
-   '(multiple-cursors expand-region mark-multiple swiper popup-kill-ring projectile org-roam diminish spaceline company all-the-icons dashboard rainbow-delimiters sudo-edit hungry-delete switch-window rainbow-mode rainbow avy smex ido-vertical-mode org-bullets spacemacs-theme beacon which-key use-package))
+   '(pdf-tools vterm auto-dark csv-mode blacken magit elpy multiple-cursors expand-region mark-multiple swiper popup-kill-ring projectile org-roam diminish spaceline company all-the-icons dashboard rainbow-delimiters sudo-edit hungry-delete switch-window rainbow-mode rainbow avy smex ido-vertical-mode org-bullets spacemacs-theme beacon which-key use-package))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

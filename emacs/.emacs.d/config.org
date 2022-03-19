@@ -8,7 +8,12 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
      (ad-activate 'ansi-term)
      (global-set-key (kbd "<M-return>") 'ansi-term)
    #+end_src
-   
+** vterm
+   Improved terminal emulation with vterm.
+   #+begin_src emacs-lisp
+     (use-package vterm
+	 :ensure t)
+   #+end_src
 * Aliases
 ** Yes/Or/No
    Simple y/or/n substiution for yes/or/no prompts
@@ -109,7 +114,7 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
    #+begin_src emacs-lisp
      (use-package diminish
        :ensure t
-       :init
+       :config
        (diminish 'hungry-delete-mode)
        (diminish 'beacon-mode)
        (diminish 'which-key-mode)
@@ -127,13 +132,16 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
 ** Auto-dark/light theme
    Note this will only work with Emacs plus. Detect MacOS dark/light status and apply appropriate theme.
    #+begin_src emacs-lisp
-     (defun my/apply-theme (appearance)
-       "Load theme, taking current system APPEARANCE into consideration."
-       (mapc #'disable-theme custom-enabled-themes)
-       (pcase appearance
-	 ('light (load-theme 'spacemacs-light t))
-	 ('dark (load-theme 'spacemacs-dark t))))
-     (add-hook 'ns-system-appearance-change-functions #'my/apply-theme)
+     (use-package auto-dark
+       :ensure t
+       :config
+       (require 'auto-dark))
+   #+end_src
+** Mac-specific setings
+   Set modifier key.
+   #+begin_src emacs-lisp
+     (when (eq system-type 'darwin)
+       (setq mac-right-option-modifier 'none))
    #+end_src
 * Org-mode
 ** Snippets expansion fix
@@ -167,7 +175,7 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
    #+end_src
 ** Set directory for org-capture
    #+begin_src emacs-lisp
-     (setq org-directory "~/Documents/Notes")
+     (setq org-directory "~/Dropbox/Notes")
      (setq org-default-notes-file (concat org-directory "/notes.org"))
    #+end_src
 ** Org-roam
@@ -176,7 +184,12 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
        :ensure t
        :config
        (setq org-roam-directory (file-truename "~/Dropbox/org-roam"))
-       (org-roam-db-autosync-mode))
+       (org-roam-db-autosync-mode)
+       :bind (("C-c n l" . org-roam-buffer-toggle)
+	      ("C-c n f" . org-roam-node-find)
+	      ("C-c n i" . org-roam-node-insert)
+	      :map org-mode-map
+	      ("C-M-i" . completion-at-point)))
    #+end_src
 
 * Packages
@@ -197,6 +210,17 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	:init
 	(beacon-mode 1))
     #+end_src
+** CSV mode
+   #+begin_src emacs-lisp
+     (use-package csv-mode
+       :ensure t)
+   #+end_src
+** pdf-tools
+   Improved PDF reading experience.
+   #+begin_src emacs-lisp
+     (use-package pdf-tools
+       :ensure t)
+   #+end_src
 ** pop-up kill ring
    A nice pop-up that lets you navigate through your killring history.
    #+begin_src emacs-lisp
@@ -206,14 +230,15 @@ Which-key provides a helpful context menu whenever chords are engaged.
    #+end_src
 ** Dashboard
    #+begin_src emacs-lisp
-     (use-package dashboard
-       :ensure t
-       :config
-       (dashboard-setup-startup-hook)
-       (setq dashboard-items '((recents . 5)
-			       (agenda . 5)))
-       (setq dashboard-startup-banner "~/small_lain.png")
-       (setq dashboard-banner-logo-title "Hello Nicolai"))
+	  (use-package dashboard
+	    :ensure t
+	    :config
+	    (dashboard-setup-startup-hook)
+	    (setq dashboard-items '((recents . 5)
+				    (agenda . 5)
+				    (projects . 5)))
+	    (setq dashboard-startup-banner "~/small_lain.png")
+	    (setq dashboard-banner-logo-title "Hello Nicolai"))
    #+end_src
 ** IDO
 *** Enable IDO
@@ -247,6 +272,12 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :bind
        ("M-s" . avy-goto-char))
    #+end_src
+** blacken
+   PEP8 formatting for Python documents with Black.
+   #+begin_src emacs-lisp
+     (use-package blacken
+       :ensure t)
+   #+end_src
 ** rainbow
    #+begin_src emacs-lisp
      (use-package rainbow-mode
@@ -267,6 +298,14 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	     '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
        :bind
 	 ([remap other-window] . switch-window))
+   #+end_src
+** elpy: developig python
+   I've opted to use the elpy package for now since tutorials are widely available, though I'm worried it does not seem to be actively maintained at the moment.
+   #+begin_src emacs-lisp
+     (use-package elpy
+       :ensure t
+       :config
+       (elpy-enable))
    #+end_src
 ** hungry-delete
    Hungry delete whitespace
@@ -332,6 +371,12 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :ensure t
        :bind ("C-q" . er/expand-region))
    #+end_src
+** magit
+   Git management.
+   #+begin_src emacs-lisp
+     (use-package magit
+       :ensure t)
+   #+end_src
 * Buffers
 ** enable ibuffer
    #+begin_src emacs-lisp
@@ -375,7 +420,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
 * Diary
   Set a different directory for the diary file.
   #+begin_src emacs-lisp
-    (setq diary-file "~/Documents/diaryfile")
+    (setq diary-file "~/Dropbox/diaryfile.org")
   #+end_src
 
 * Word processing
