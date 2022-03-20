@@ -215,6 +215,13 @@ Which-key provides a helpful context menu whenever chords are engaged.
      (use-package csv-mode
        :ensure t)
    #+end_src
+** read epubs
+   #+begin_src emacs-lisp
+     (use-package nov
+       :ensure t
+       :config
+       (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+   #+end_src
 ** pdf-tools
    Improved PDF reading experience.
    #+begin_src emacs-lisp
