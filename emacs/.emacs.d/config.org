@@ -191,6 +191,10 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
 	      :map org-mode-map
 	      ("C-M-i" . completion-at-point)))
    #+end_src
+** Set timer sound
+   #+begin_src emacs-lisp
+     (setq org-clock-sound "~/Dropbox/yousuffer.wav")
+   #+end_src
 
 * Packages
 ** Visual improvements
@@ -210,6 +214,24 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	:init
 	(beacon-mode 1))
     #+end_src
+** elfeed
+   Read RSS using elfeed.
+   #+begin_src emacs-lisp
+     (use-package elfeed
+       :ensure t
+       :config
+       (setq elfeed-feeds
+	     '(
+	       ;;programming
+	       ("https://www.reddit.com/r/emacs.rss" emacs)
+	       ;;news
+	       ("http://feeds.bbci.co.uk/news/world/rss.xml" bbc)
+	       ("http://www.npr.org/rss/rss.php?id=1004" npr)
+	       ))
+       (setq-default elfeed-search-filter "@2-days-ago +unread")  
+       (setq-default elfeed-search-title-max-width 100)           
+       (setq-default elfeed-search-title-min-width 100))
+   #+end_src
 ** CSV mode
    #+begin_src emacs-lisp
      (use-package csv-mode
@@ -237,15 +259,16 @@ Which-key provides a helpful context menu whenever chords are engaged.
    #+end_src
 ** Dashboard
    #+begin_src emacs-lisp
-	  (use-package dashboard
-	    :ensure t
-	    :config
-	    (dashboard-setup-startup-hook)
-	    (setq dashboard-items '((recents . 5)
-				    (agenda . 5)
-				    (projects . 5)))
-	    (setq dashboard-startup-banner "~/small_lain.png")
-	    (setq dashboard-banner-logo-title "Hello Nicolai"))
+     (use-package dashboard
+       :ensure t
+       :config
+       (dashboard-setup-startup-hook)
+       (setq dashboard-items '((recents . 5)
+			       (agenda . 5)
+			       (bookmarks . 5)
+			       (projects . 5)))
+       (setq dashboard-startup-banner "~/small_lain.png")
+       (setq dashboard-banner-logo-title "Hello Nicolai"))
    #+end_src
 ** IDO
 *** Enable IDO
