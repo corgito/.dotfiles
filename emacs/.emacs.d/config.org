@@ -31,6 +31,10 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
    #+begin_src emacs-lisp
      (add-hook 'dired-mode-hook 'auto-revert-mode)
    #+end_src
+** Line numbers
+   #+begin_src emacs-lisp
+     (global-linum-mode t)
+   #+end_src
 ** Display the time
    #+begin_src emacs-lisp
      (setq display-time-24hr-format t)
