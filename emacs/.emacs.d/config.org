@@ -498,13 +498,24 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :bind
 	 ([remap other-window] . switch-window))
    #+end_src
-** elpy: developig python
+** elpy: developing in python
    I've opted to use the elpy package for now since tutorials are widely available, though I'm worried it does not seem to be actively maintained at the moment.
    #+begin_src emacs-lisp
      (use-package elpy
        :ensure t
        :config
        (elpy-enable))
+   #+end_src
+** Flycheck
+   Improved syntax checking
+   #+begin_src emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :config
+       (when (require 'flycheck nil t)
+       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+       (add-hook 'elpy-mode-hook 'flycheck-mode))
+     )
    #+end_src
 ** hungry-delete
    Hungry delete whitespace
@@ -541,6 +552,13 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :ensure t
        :init
        (add-hook 'after-init-hook 'global-company-mode))
+   #+end_src
+** company quick-help mode
+   #+begin_src emacs-lisp
+     (use-package company-quickhelp
+       :ensure t
+       :init
+       (company-quickhelp-mode))
    #+end_src
 ** projectile
    #+begin_src emacs-lisp
