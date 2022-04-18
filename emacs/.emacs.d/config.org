@@ -258,9 +258,11 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
     (add-hook 'mu4e-compose-mode-hook 'company-mode)
 
     ;; prefer plainest version of messages
-    (with-eval-after-load "mm-decode"
-	   (add-to-list 'mm-discouraged-alternatives "text/html")
-	   (add-to-list 'mm-discouraged-alternatives "text/richtext"))
+    ;; (with-eval-after-load "mm-decode"
+    ;;       (add-to-list 'mm-discouraged-alternatives "text/html")
+    ;;(add-to-list 'mm-discouraged-alternatives "text/richtext"))
+     ;; attempt to show images when viewing messages
+     (setq mu4e-view-show-images t)
   #+end_src
 * Org-mode
 ** Snippets expansion fix
