@@ -45,11 +45,12 @@
      ("XXX+" . "#dc752f")
      ("\\?\\?\\?+" . "#dc752f")))
  '(org-agenda-files
-   '("~/Dropbox/Notes/Polska.org" "~/Dropbox/Notes/personal.org" "~/Documents/Work/chn.org" "~/Documents/tweetparser.org"))
+   '("~/Dropbox/Projects/Pulse Analyzer/Pulse Analyzer TODO.org" "~/Dropbox/Notes/Polska.org" "~/Dropbox/Notes/personal.org" "~/Documents/Work/chn.org" "~/Documents/tweetparser.org"))
+ '(org-export-backends '(ascii beamer html icalendar latex md odt))
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
  '(package-selected-packages
-   '(flycheck company-quickhelp mu4e vertico olivetti zen-mode google-translate elfeed nov pdf-tools vterm auto-dark csv-mode blacken magit elpy multiple-cursors expand-region mark-multiple swiper popup-kill-ring projectile org-roam diminish spaceline company all-the-icons dashboard rainbow-delimiters sudo-edit hungry-delete switch-window rainbow-mode rainbow avy smex ido-vertical-mode org-bullets spacemacs-theme beacon which-key use-package))
+   '(ox-gfm flycheck company-quickhelp mu4e vertico olivetti zen-mode google-translate elfeed nov pdf-tools vterm auto-dark csv-mode blacken magit elpy multiple-cursors expand-region mark-multiple swiper popup-kill-ring projectile org-roam diminish spaceline company all-the-icons dashboard rainbow-delimiters sudo-edit hungry-delete switch-window rainbow-mode rainbow avy smex ido-vertical-mode org-bullets spacemacs-theme beacon which-key use-package))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
