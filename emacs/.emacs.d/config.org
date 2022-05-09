@@ -1,4 +1,3 @@
-
 * Terminal
 ** Setting default shell: ZSH
 Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
@@ -24,9 +23,10 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
 * Visual and quality of life improvements
 ** No toolbar/menubar/scrollbar
    #+begin_src emacs-lisp
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
+     (tool-bar-mode -1)
+     (menu-bar-mode -1)
+     (scroll-bar-mode -1)
+     (set-fringe-mode 10)
    #+end_src
 ** Autorefresh dired
    #+begin_src emacs-lisp
@@ -54,10 +54,6 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
 ** Turn off the bell
    #+begin_src emacs-lisp
      (setq ring-bell-function 'ignore)
-   #+end_src
-** Highlight current line
-   #+begin_src emacs-lisp
-     (when window-system (global-hl-line-mode t))
    #+end_src
 ** Prettify symbols
    #+begin_src emacs-lisp
@@ -110,15 +106,6 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
      (line-number-mode 1)
      (column-number-mode 1)
    #+end_src
-** Spacemacs modeline
-   #+begin_src emacs-lisp
-     (use-package spaceline
-       :ensure t
-       :config
-       (require 'spaceline-config)
-       (setq powerline-default-separator (quote arrow))
-       (spaceline-spacemacs-theme))
-   #+end_src
 ** diminish
    #+begin_src emacs-lisp
      (use-package diminish
@@ -145,6 +132,12 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
        :config
        (require 'auto-dark))
    #+end_src
+** Transparency
+#+begin_src emacs-lisp
+  (set-frame-parameter (selected-frame) 'alpha '(94 . 94))
+  (add-to-list 'default-frame-alist '(alpha . (94 . 94)))
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+end_src
 ** Mac-specific setings
    Set modifier key.
    #+begin_src emacs-lisp
@@ -155,6 +148,16 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
    #+begin_src emacs-lisp
      (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
    #+end_src
+** Symlinked files
+Don't warn for following symlinked files.
+#+begin_src emacs-lisp
+  (setq vc-follow-symlinks t)
+#+end_src
+** Large files
+Don't warn for large files.
+#+begin_src emacs-lisp
+  (setq large-file-warning-threshold nil)
+#+end_src
 * Email with mu4e
   #+begin_src emacs-lisp
     ;; load mu4e from the installation path.
@@ -698,3 +701,14 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	:load-path "~/.emacs.d/org-cv/"
 	:init (require 'ox-moderncv))
   #+end_src
+* Doom themes
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :ensure t)
+#+end_src
+* Doom modeline
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1))
+#+end_src
