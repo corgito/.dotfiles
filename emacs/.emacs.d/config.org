@@ -6,7 +6,6 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
      (defadvice ansi-term (before force-bash)
        (interactive (list my-term-shell)))
      (ad-activate 'ansi-term)
-     (global-set-key (kbd "<M-return>") 'ansi-term)
    #+end_src
 ** vterm
    Improved terminal emulation with vterm.
@@ -91,15 +90,6 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
 				    (?\" . ?\")
 				    ))
      (electric-pair-mode t)
-   #+end_src
-** Vim CIW substitute
-   Mimic the beloved CIW command with C-c w w
-   #+begin_src emacs-lisp
-     (defun kill-whole-word()
-       (interactive)
-       (backward-word)
-       (kill-word 1))
-     (global-set-key (kbd "C-c w w") 'kill-whole-word)
    #+end_src
 ** Show lines and columns
    #+begin_src emacs-lisp
@@ -711,4 +701,11 @@ Which-key provides a helpful context menu whenever chords are engaged.
   (use-package doom-modeline
     :ensure t
     :init (doom-modeline-mode 1))
+#+end_src
+* Support for markdown mode
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :mode ("README\\.md\\'" . gfm-mode)
+    :init (setq markdown-command "pandoc"))
 #+end_src
