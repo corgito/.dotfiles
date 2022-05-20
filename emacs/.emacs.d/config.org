@@ -114,14 +114,7 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
    #+begin_src emacs-lisp
      (setq org-startup-truncated nil)
    #+end_src
-** Auto-dark/light theme
-   Note this will only work with Emacs plus. Detect MacOS dark/light status and apply appropriate theme.
-   #+begin_src emacs-lisp
-     (use-package auto-dark
-       :ensure t
-       :config
-       (require 'auto-dark))
-   #+end_src
+
 ** Transparency
 #+begin_src emacs-lisp
   (set-frame-parameter (selected-frame) 'alpha '(94 . 94))
@@ -282,7 +275,7 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
 ** Multi-state workflow
    #+begin_src emacs-lisp
      (setq org-todo-keywords
-	   '((sequence "TODO" "WAITING" "|" "DONE" "DELEGATED")))
+	   '((sequence "TODO(t)" "WAITING(w)" "REPEATING" "|" "DONE" "DELEGATED")))
    #+end_src
 ** Timestamps for closed todo items
    #+begin_src emacs-lisp
@@ -320,8 +313,17 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
    #+end_src
 ** Set timer sound
    #+begin_src emacs-lisp
-     (setq org-clock-sound "~/Dropbox/yousuffer.wav")
+	  (setq org-clock-sound "~/Dropbox/yousuffer.wav")
    #+end_src
+** Custom agenda views
+#+begin_src emacs-lisp
+  (defun org-focus-private() "Set focus on private things." (interactive)
+  (setq org-agenda-files '("~/Dropbox/Notes/personal.org")))
+  (defun org-focus-work() "Set focus on work things." (interactive)
+  (setq org-agenda-files '("~/Dropbox/Notes/CHN.org")))
+  (defun org-focus-all() "Set focus on all things." (interactive)
+  (setq org-agenda-files '("~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/CHN.org")))
+#+end_src
 
 * Packages
 ** Visual improvements
@@ -708,4 +710,53 @@ Which-key provides a helpful context menu whenever chords are engaged.
     :ensure t
     :mode ("README\\.md\\'" . gfm-mode)
     :init (setq markdown-command "pandoc"))
+#+end_src
+* Wrap Region
+Wrap selection automatically with a quote, parenthesis, curly brackets.
+#+begin_src emacs-lisp
+  (use-package wrap-region
+    :ensure t
+    :config
+    (wrap-region-mode t))
+#+end_src
+* Change a word with visual feedback
+One of the nice features I've seen in non-Emacs editors is the ability to change variables with visual feedback.
+Activate with C-;
+#+begin_src emacs-lisp
+  (use-package iedit
+    :ensure t)
+#+end_src
+* Org Babel
+Configure Babel for use with Python
+#+begin_src emacs-lisp
+  ;; active Babel languages
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)))
+#+end_src
+* Org Modern
+#+begin_src emacs-lisp
+  (use-package org-modern
+    :ensure t)
+  (add-hook 'org-mode-hook #'org-modern-mode)
+  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+#+end_src
+* Org visual improvements
+#+begin_src emacs-lisp
+  (setq org-hide-emphasis-markers t)
+#+end_src
+* Theme
+#+begin_src emacs-lisp
+  (load-theme 'doom-palenight t)
+#+end_src
+* Enable wrap-region by default
+Allows us to surround text with e.g. quotation marks.
+#+begin_src emacs-lisp
+  (wrap-region-mode t)
+#+end_src
+* HTMLize
+We install this package so org-mode will export HTML files with syntax highlighting within code blocks.
+#+begin_src emacs-lisp
+  (use-package htmlize
+    :ensure t)
 #+end_src
