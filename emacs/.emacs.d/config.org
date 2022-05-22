@@ -760,3 +760,28 @@ We install this package so org-mode will export HTML files with syntax highlight
   (use-package htmlize
     :ensure t)
 #+end_src
+* God mode
+For the sake of my left pinky.
+#+begin_src emacs-lisp
+  (use-package god-mode
+    :ensure t)
+  (require 'god-mode)
+  (god-mode)
+  (global-set-key (kbd "<escape>") #'god-local-mode)
+#+end_src
+* Org mode python improvements
+#+begin_src emacs-lisp
+;; (setq python-indent-offset 0)
+;; (setq org-edit-src-content-indentation 0)
+#+end_src
+* YASnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t)
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook #'yas-minor-mode)
+
+  (use-package yasnippet-snippets
+    :ensure t)
+
+#+end_src
