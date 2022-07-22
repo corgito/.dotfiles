@@ -1,3 +1,6 @@
+#+title: Emacs Configuration File
+#+author: Nicolai Haddal
+
 * Terminal
 ** Setting default shell: ZSH
 Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
@@ -35,6 +38,14 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
    #+begin_src emacs-lisp
      (global-linum-mode t)
    #+end_src
+** Handle backup files
+Place backup files in their own directory.
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+       backup-by-copying t  ; don't delink hardlinks
+       delete-old-versions t  ; automatically delete excess backups
+       )
+#+end_src
 ** Display the time
    #+begin_src emacs-lisp
      (setq display-time-24hr-format t)
@@ -91,12 +102,12 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
 				    ))
      (electric-pair-mode t)
    #+end_src
-** Show lines and columns
+** Show  column numbers
    #+begin_src emacs-lisp
-     (line-number-mode 1)
-     (column-number-mode 1)
+	  (column-number-mode 1)
    #+end_src
 ** diminish
+Hide certain minor modes in the status bar.
    #+begin_src emacs-lisp
      (use-package diminish
        :ensure t
@@ -127,10 +138,7 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
      (when (eq system-type 'darwin)
        (setq mac-right-option-modifier 'none))
    #+end_src
-** EWW tls fix
-   #+begin_src emacs-lisp
-     (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-   #+end_src
+
 ** Symlinked files
 Don't warn for following symlinked files.
 #+begin_src emacs-lisp
@@ -169,7 +177,7 @@ Don't warn for large files.
     (setq mu4e-change-filenames-when-moving t)
 
     ;; list of your email adresses:
-    (setq mu4e-user-mail-address-list '("nhaddal@protonmail.com"))
+    (setq mu4e-user-mail-address-list '("nhaddal@protonmail.com" "nicolai@nicolaihaddal.info"))
 
     (setq mu4e-contexts
 	  `(,(make-mu4e-context
@@ -245,11 +253,17 @@ Don't warn for large files.
     (add-hook 'mu4e-compose-mode-hook 'company-mode)
 
     ;; prefer plainest version of messages
-    ;; (with-eval-after-load "mm-decode"
-    ;;       (add-to-list 'mm-discouraged-alternatives "text/html")
-    ;;(add-to-list 'mm-discouraged-alternatives "text/richtext"))
-     ;; attempt to show images when viewing messages
+     (with-eval-after-load "mm-decode"
+	   (add-to-list 'mm-discouraged-alternatives "text/html")
+    (add-to-list 'mm-discouraged-alternatives "text/richtext"))
+    ;; attempt to show images when viewing messages
      (setq mu4e-view-show-images t)
+
+    (require 'org-mu4e)
+
+    ;;view email in browser
+    (add-to-list 'mu4e-view-actions
+      '("ViewInBrowser" . mu4e-action-view-in-browser) t)
   #+end_src
 * Org-mode
 ** Snippets expansion fix
@@ -257,6 +271,10 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
 #+begin_src emacs-lisp
   (when (version<= "9.2" (org-version))
     (require 'org-tempo))
+#+end_src
+** Export to docx
+#+begin_src emacs-lisp
+  (setq org-odt-preferred-output-format "docx")
 #+end_src
 ** Org-bullets
    #+begin_src emacs-lisp
@@ -325,6 +343,25 @@ I honestly don't know why I need this yet. But this fix will make snippet expans
   (setq org-agenda-files '("~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/CHN.org")))
 #+end_src
 
+** Org Babel
+Configure Babel for use with Python
+#+begin_src emacs-lisp
+  ;; active Babel languages
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)))
+#+end_src
+** Org Modern
+#+begin_src emacs-lisp
+  (use-package org-modern
+    :ensure t)
+  (add-hook 'org-mode-hook #'org-modern-mode)
+  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+#+end_src
+** Org visual improvements
+#+begin_src emacs-lisp
+  (setq org-hide-emphasis-markers t)
+#+end_src
 * Packages
 ** Visual improvements
 *** Which-key
@@ -441,7 +478,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
 			       (bookmarks . 5)
 			       (projects . 5)))
        (setq dashboard-startup-banner "~/small_lain.png")
-       (setq dashboard-banner-logo-title "Hello Nicolai"))
+       (setq dashboard-banner-logo-title "Welcome to Emacs!"))
    #+end_src
 ** Dired
    Optimized configuration for file management in Emacs.
@@ -525,24 +562,12 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :bind
 	 ([remap other-window] . switch-window))
    #+end_src
-** elpy: developing in python
-   I've opted to use the elpy package for now since tutorials are widely available, though I'm worried it does not seem to be actively maintained at the moment.
-   #+begin_src emacs-lisp
-     (use-package elpy
-       :ensure t
-       :config
-       (elpy-enable))
-   #+end_src
 ** Flycheck
    Improved syntax checking
    #+begin_src emacs-lisp
-     (use-package flycheck
-       :ensure t
-       :config
-       (when (require 'flycheck nil t)
-       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-       (add-hook 'elpy-mode-hook 'flycheck-mode))
-     )
+	  (use-package flycheck
+	    :ensure t
+	  )
    #+end_src
 ** hungry-delete
    Hungry delete whitespace
@@ -628,10 +653,18 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :ensure t
        )
    #+end_src
+* HTMLize
+We install this package so org-mode will export HTML files with syntax highlighting within code blocks.
+#+begin_src emacs-lisp
+  (use-package htmlize
+    :ensure t)
+#+end_src
+
 * Buffers
 ** enable ibuffer
    #+begin_src emacs-lisp
      (global-set-key (kbd "C-x b") 'ibuffer)
+     (global-set-key [remap list-buffers] 'ibuffer)
    #+end_src
    
 * Custom functions
@@ -693,11 +726,6 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	:load-path "~/.emacs.d/org-cv/"
 	:init (require 'ox-moderncv))
   #+end_src
-* Doom themes
-#+begin_src emacs-lisp
-  (use-package doom-themes
-    :ensure t)
-#+end_src
 * Doom modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
@@ -726,53 +754,19 @@ Activate with C-;
   (use-package iedit
     :ensure t)
 #+end_src
-* Org Babel
-Configure Babel for use with Python
-#+begin_src emacs-lisp
-  ;; active Babel languages
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)))
-#+end_src
-* Org Modern
-#+begin_src emacs-lisp
-  (use-package org-modern
-    :ensure t)
-  (add-hook 'org-mode-hook #'org-modern-mode)
-  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
-#+end_src
-* Org visual improvements
-#+begin_src emacs-lisp
-  (setq org-hide-emphasis-markers t)
-#+end_src
 * Theme
 #+begin_src emacs-lisp
-  (load-theme 'doom-palenight t)
+  (load-theme 'doom-one)
+#+end_src
+** Doom themes
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :ensure t)
 #+end_src
 * Enable wrap-region by default
 Allows us to surround text with e.g. quotation marks.
 #+begin_src emacs-lisp
   (wrap-region-mode t)
-#+end_src
-* HTMLize
-We install this package so org-mode will export HTML files with syntax highlighting within code blocks.
-#+begin_src emacs-lisp
-  (use-package htmlize
-    :ensure t)
-#+end_src
-* God mode
-For the sake of my left pinky.
-#+begin_src emacs-lisp
-  (use-package god-mode
-    :ensure t)
-  (require 'god-mode)
-  (god-mode)
-  (global-set-key (kbd "<escape>") #'god-local-mode)
-#+end_src
-* Org mode python improvements
-#+begin_src emacs-lisp
-;; (setq python-indent-offset 0)
-;; (setq org-edit-src-content-indentation 0)
 #+end_src
 * YASnippet
 #+begin_src emacs-lisp
@@ -785,3 +779,28 @@ For the sake of my left pinky.
     :ensure t)
 
 #+end_src
+* IDE Features
+** Python configuration
+#+begin_src emacs-lisp
+  (use-package python-mode
+    :ensure t
+    :custom
+    (python-shell-interpreter "python3")
+    ())
+#+end_src
+** eglot
+Minimal IDE-like features for emacs.
+#+begin_src emacs-lisp
+  (use-package eglot
+    :ensure t)
+#+end_src
+** Disable python interpreter warning
+#+begin_src emacs-lisp
+  (setq python-shell-completion-native-disabled-interpreters '("python"))
+#+end_src
+* tab bar history
+#+begin_src emacs-lisp
+  (global-set-key (kbd "M-[") 'tab-bar-history-back)
+  (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+#+end_src
+
