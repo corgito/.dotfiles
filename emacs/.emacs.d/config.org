@@ -16,6 +16,21 @@ Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
      (use-package vterm
 	 :ensure t)
    #+end_src
+
+* Custom functions
+#+begin_src emacs-lisp
+    (defun my-buffer-face-mode-sans()
+      (interactive)
+      (setq buffer-face-mode-face '(:family "Hack Nerd Font Mono"))
+      (buffer-face-mode))
+#+end_src
+#+begin_src emacs-lisp
+  (defun my-buffer-face-mode-serif ()
+     "Sets a fixed width (monospace) font in current buffer"
+     (interactive)
+     (setq buffer-face-mode-face '(:family "Times New Roman"))
+     (buffer-face-mode))
+#+end_src
 * Aliases
 ** Yes/Or/No
    Simple y/or/n substiution for yes/or/no prompts
@@ -126,12 +141,6 @@ Hide certain minor modes in the status bar.
      (setq org-startup-truncated nil)
    #+end_src
 
-** Transparency
-#+begin_src emacs-lisp
-  (set-frame-parameter (selected-frame) 'alpha '(94 . 94))
-  (add-to-list 'default-frame-alist '(alpha . (94 . 94)))
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
-#+end_src
 ** Mac-specific setings
    Set modifier key.
    #+begin_src emacs-lisp
@@ -177,21 +186,21 @@ Don't warn for large files.
     (setq mu4e-change-filenames-when-moving t)
 
     ;; list of your email adresses:
-    (setq mu4e-user-mail-address-list '("nhaddal@protonmail.com" "nicolai@nicolaihaddal.info"))
+    (setq mu4e-user-mail-address-list '("nicolai@nicolaihaddal.info" "nicolai@nicolaihaddal.info"))
 
     (setq mu4e-contexts
 	  `(,(make-mu4e-context
 	      :name "protonmail"
 	      :enter-func
-	      (lambda () (mu4e-message "Enter nhaddal@protonmail.com context"))
+	      (lambda () (mu4e-message "Enter nicolai@nicolaihaddal.info context"))
 	      :leave-func
-	      (lambda () (mu4e-message "Leave nhaddal@protonmail.com context"))
+	      (lambda () (mu4e-message "Leave nicolai@nicolaihaddal.info context"))
 	      :match-func
 	      (lambda (msg)
 		(when msg
 		  (mu4e-message-contact-field-matches msg
-						      :to "nhaddal@protonmail.com")))
-	      :vars '((user-mail-address . "nhaddal@protonmail.com" )
+						      :to "nicolai@nicolaihaddal.info")))
+	      :vars '((user-mail-address . "nicolai@nicolaihaddal.info" )
 		      (user-full-name . "Nicolai Haddal")
 		      (mu4e-drafts-folder . "/protonmail/Drafts")
 		      (mu4e-refile-folder . "/protonmail/Archive")
@@ -233,9 +242,9 @@ Don't warn for large files.
 			 (message-fetch-field "from")))
 		 (account
 		  (cond
-		   ((string-match "nhaddal@protonmail.com" from) "protonmail")
-		   ((string-match "nhaddal@protonmail.com" from) "protonmail")
-		   ((string-match "nhaddal@protonmail.com" from) "protonmail"))))
+		   ((string-match "nicolai@nicolaihaddal.info" from) "protonmail")
+		   ((string-match "nicolai@nicolaihaddal.info" from) "protonmail")
+		   ((string-match "nicolai@nicolaihaddal.info" from) "protonmail"))))
 	      (setq message-sendmail-extra-arguments (list '"-a" account))))))
 
     (add-hook 'message-send-mail-hook 'timu/set-msmtp-account)
@@ -652,6 +661,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
      (use-package olivetti
        :ensure t
        )
+     (add-hook 'olivetti-mode-hook 'my-buffer-face-mode-serif)
    #+end_src
 * HTMLize
 We install this package so org-mode will export HTML files with syntax highlighting within code blocks.
@@ -802,5 +812,12 @@ Minimal IDE-like features for emacs.
 #+begin_src emacs-lisp
   (global-set-key (kbd "M-[") 'tab-bar-history-back)
   (global-set-key (kbd "M-]") 'tab-bar-history-forward)
+#+end_src
+* writeroom mode
+#+begin_src emacs-lisp
+  (use-package writeroom-mode
+    :ensure t)
+  (add-hook 'writeroom-mode-enable-hook 'my-buffer-face-mode-serif)
+  (add-hook 'writeroom-mode-disable-hook 'my-buffer-face-mode-sans)
 #+end_src
 
