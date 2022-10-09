@@ -1,8 +1,5 @@
 #+title: Emacs Configuration File
 #+author: Nicolai Haddal
-
-
-
 * Aliases
 ** Yes/Or/No
    Simple y/or/n substiution for yes/or/no prompts
@@ -299,8 +296,10 @@ Which-key provides a helpful context menu whenever chords are engaged.
    #+begin_src emacs-lisp
      (use-package dired
        :ensure nil
-       :custom ((insert-directory-program "gls" dired-use-ls-dired t)
-		(dired-listing-switches "-agho --group-directories-first"))
+       :custom
+       (when (eq system-type 'darwin)
+	 ((insert-directory-program "gls" dired-use-ls-dired t)
+		(dired-listing-switches "-agho --group-directories-first")))
        :config
        )
    #+end_src
@@ -492,11 +491,24 @@ We install this package so org-mode will export HTML files with syntax highlight
      (global-set-key (kbd "<f8>") 'insertelisporg)
    #+end_src   
 * Diary
+** Diary directory
   Set a different directory for the diary file.
   #+begin_src emacs-lisp
     (setq diary-file "~/Dropbox/diaryfile.org")
   #+end_src
-
+** Org journal
+Use org journal for day-to-day journal entries.
+#+begin_src emacs-lisp
+  (use-package org-journal
+    :ensure t
+    :defer t
+    :init
+    ;; Change default prefix key; needs to be set before loading org-journal
+    (setq org-journal-prefix-key "C-c j")
+    :config
+    (setq org-journal-dir "~/Dropbox/org/journal/"
+	  org-journal-date-format "%A, %d %B %Y"))
+#+end_src
 * Word processing
 
 ** Flyspell configuration
@@ -510,12 +522,6 @@ We install this package so org-mode will export HTML files with syntax highlight
 	  (define-key flyspell-mouse-map [mouse-3] #'undefined)))
    #+end_src
 
-* CV creation
-  #+begin_src emacs-lisp
-    (use-package ox-moderncv
-	:load-path "~/.emacs.d/org-cv/"
-	:init (require 'ox-moderncv))
-  #+end_src
 * Doom modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
@@ -545,13 +551,11 @@ Activate with C-;
     :ensure t)
 #+end_src
 * Theme
-#+begin_src emacs-lisp
-  (load-theme 'doom-one)
-#+end_src
 ** Doom themes
 #+begin_src emacs-lisp
   (use-package doom-themes
     :ensure t)
+  (load-theme 'doom-lantern t)
 #+end_src
 * Enable wrap-region by default
 Allows us to surround text with e.g. quotation marks.
@@ -564,20 +568,8 @@ Allows us to surround text with e.g. quotation marks.
     :ensure t)
   (yas-reload-all)
   (add-hook 'prog-mode-hook #'yas-minor-mode)
-
-  (use-package yasnippet-snippets
-    :ensure t)
-
 #+end_src
 * IDE Features
-** Python configuration
-#+begin_src emacs-lisp
-  (use-package python-mode
-    :ensure t
-    :custom
-    (python-shell-interpreter "python3")
-    ())
-#+end_src
 ** eglot
 Minimal IDE-like features for emacs.
 #+begin_src emacs-lisp
