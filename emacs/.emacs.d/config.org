@@ -1,36 +1,8 @@
 #+title: Emacs Configuration File
 #+author: Nicolai Haddal
 
-* Terminal
-** Setting default shell: ZSH
-Set the default shell to zsh. Make ansi-term stop asking to confirm shell.
-   #+begin_src emacs-lisp
-     (defvar my-term-shell "/bin/zsh")
-     (defadvice ansi-term (before force-bash)
-       (interactive (list my-term-shell)))
-     (ad-activate 'ansi-term)
-   #+end_src
-** vterm
-   Improved terminal emulation with vterm.
-   #+begin_src emacs-lisp
-     (use-package vterm
-	 :ensure t)
-   #+end_src
 
-* Custom functions
-#+begin_src emacs-lisp
-    (defun my-buffer-face-mode-sans()
-      (interactive)
-      (setq buffer-face-mode-face '(:family "Hack Nerd Font Mono"))
-      (buffer-face-mode))
-#+end_src
-#+begin_src emacs-lisp
-  (defun my-buffer-face-mode-serif ()
-     "Sets a fixed width (monospace) font in current buffer"
-     (interactive)
-     (setq buffer-face-mode-face '(:family "Times New Roman"))
-     (buffer-face-mode))
-#+end_src
+
 * Aliases
 ** Yes/Or/No
    Simple y/or/n substiution for yes/or/no prompts
@@ -106,6 +78,10 @@ Place backup files in their own directory.
    #+begin_src emacs-lisp
      (global-subword-mode 1)
    #+end_src
+** Ignore case for completion
+#+begin_src emacs-lisp
+  (setq completion-ignore-case  t)
+#+end_src
 ** electric parentheses
    auto-complete parentheses
    #+begin_src emacs-lisp
@@ -117,10 +93,6 @@ Place backup files in their own directory.
 				    ))
      (electric-pair-mode t)
    #+end_src
-** Show  column numbers
-   #+begin_src emacs-lisp
-	  (column-number-mode 1)
-   #+end_src
 ** diminish
 Hide certain minor modes in the status bar.
    #+begin_src emacs-lisp
@@ -131,10 +103,6 @@ Hide certain minor modes in the status bar.
        (diminish 'which-key-mode)
        (diminish 'rainbow-mode)
        (diminish 'subword-mode))
-   #+end_src
-** Set global font-size
-   #+begin_src emacs-lisp
-     (set-face-attribute 'default nil :height 165)
    #+end_src
 ** Line wrapping and word breaking
    #+begin_src emacs-lisp
@@ -158,140 +126,7 @@ Don't warn for large files.
 #+begin_src emacs-lisp
   (setq large-file-warning-threshold nil)
 #+end_src
-* Email with mu4e
-  #+begin_src emacs-lisp
-    ;; load mu4e from the installation path.
-    ;; yours might differ check with the Emacs installation
-    (use-package mu4e
-      :load-path  "/usr/local/share/emacs/site-lisp/mu/mu4e/")
-    ;; for sending mails
-    (require 'smtpmail)
-
-    ;; we installed this with homebrew
-    (setq mu4e-mu-binary (executable-find "mu"))
-
-    ;; this is the directory we created before:
-    (setq mu4e-maildir "~/.maildir")
-
-    ;; this command is called to sync imap servers:
-    (setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
-    ;; how often to call it in seconds:
-    (setq mu4e-update-interval 300)
-
-    ;; save attachment to desktop by default
-    ;; or another choice of yours:
-    (setq mu4e-attachment-dir "~/Desktop")
-
-    ;; rename files when moving - needed for mbsync:
-    (setq mu4e-change-filenames-when-moving t)
-
-    ;; list of your email adresses:
-    (setq mu4e-user-mail-address-list '("nicolai@nicolaihaddal.info" "nicolai@nicolaihaddal.info"))
-
-    (setq mu4e-contexts
-	  `(,(make-mu4e-context
-	      :name "protonmail"
-	      :enter-func
-	      (lambda () (mu4e-message "Enter nicolai@nicolaihaddal.info context"))
-	      :leave-func
-	      (lambda () (mu4e-message "Leave nicolai@nicolaihaddal.info context"))
-	      :match-func
-	      (lambda (msg)
-		(when msg
-		  (mu4e-message-contact-field-matches msg
-						      :to "nicolai@nicolaihaddal.info")))
-	      :vars '((user-mail-address . "nicolai@nicolaihaddal.info" )
-		      (user-full-name . "Nicolai Haddal")
-		      (mu4e-drafts-folder . "/protonmail/Drafts")
-		      (mu4e-refile-folder . "/protonmail/Archive")
-		      (mu4e-sent-folder . "/protonmail/Sent Messages")
-		      (mu4e-trash-folder . "/protonmail/Deleted Messages")))))
-
-    ;; Send mail
-    (setq message-send-mail-function 'smtpmail-send-it
-	    smtpmail-auth-credentials "~/.authinfo"
-	    smtpmail-smtp-server "127.0.0.1"
-	    smtpmail-smtp-service 1025)
-    (setq mu4e-context-policy 'pick-first) ;; start with the first (default) context;
-    (setq mu4e-compose-context-policy 'ask) ;; ask for context if no context matches;
-    ;; don't keep message compose buffers around after sending:
-    (setq message-kill-buffer-on-exit t)
-
-    ;; send function:
-    (setq send-mail-function 'sendmail-send-it
-	  message-send-mail-function 'sendmail-send-it)
-
-    ;; send program:
-    ;; this is exeranal. remember we installed it before.
-    (setq sendmail-program (executable-find "msmtp"))
-
-    ;; select the right sender email from the context.
-    (setq message-sendmail-envelope-from 'header)
-
-    ;; chose from account before sending
-    ;; this is a custom function that works for me.
-    ;; well I stole it somewhere long ago.
-    ;; I suggest using it to make matters easy
-    ;; of course adjust the email adresses and account descriptions
-    (defun timu/set-msmtp-account ()
-      (if (message-mail-p)
-	  (save-excursnion
-	    (let*
-		((from (save-restriction
-			 (message-narrow-to-headers)
-			 (message-fetch-field "from")))
-		 (account
-		  (cond
-		   ((string-match "nicolai@nicolaihaddal.info" from) "protonmail")
-		   ((string-match "nicolai@nicolaihaddal.info" from) "protonmail")
-		   ((string-match "nicolai@nicolaihaddal.info" from) "protonmail"))))
-	      (setq message-sendmail-extra-arguments (list '"-a" account))))))
-
-    (add-hook 'message-send-mail-hook 'timu/set-msmtp-account)
-
-    ;; mu4e cc & bcc
-    ;; this is custom as well
-    (add-hook 'mu4e-compose-mode-hook
-	      (defun timu/add-cc-and-bcc ()
-		"My Function to automatically add Cc & Bcc: headers.
-	This is in the mu4e compose mode."
-		(save-excursion (message-add-header "Cc:\n"))
-		(save-excursion (message-add-header "Bcc:\n"))))
-
-    ;; mu4e address completion
-    (add-hook 'mu4e-compose-mode-hook 'company-mode)
-
-    ;; prefer plainest version of messages
-     (with-eval-after-load "mm-decode"
-	   (add-to-list 'mm-discouraged-alternatives "text/html")
-    (add-to-list 'mm-discouraged-alternatives "text/richtext"))
-    ;; attempt to show images when viewing messages
-     (setq mu4e-view-show-images t)
-
-    (require 'org-mu4e)
-
-    ;;view email in browser
-    (add-to-list 'mu4e-view-actions
-      '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-  #+end_src
 * Org-mode
-** Snippets expansion fix
-I honestly don't know why I need this yet. But this fix will make snippet expansion work.
-#+begin_src emacs-lisp
-  (when (version<= "9.2" (org-version))
-    (require 'org-tempo))
-#+end_src
-** Export to docx
-#+begin_src emacs-lisp
-  (setq org-odt-preferred-output-format "docx")
-#+end_src
-** Org-bullets
-   #+begin_src emacs-lisp
-     (use-package org-bullets
-       :ensure t
-       :config
-       (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
-   #+end_src
 ** Global keybindings
    Global keybindings for org-mode for org-store-link, agenda, and capture
    #+begin_src emacs-lisp
@@ -359,17 +194,6 @@ Configure Babel for use with Python
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)))
-#+end_src
-** Org Modern
-#+begin_src emacs-lisp
-  (use-package org-modern
-    :ensure t)
-  (add-hook 'org-mode-hook #'org-modern-mode)
-  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
-#+end_src
-** Org visual improvements
-#+begin_src emacs-lisp
-  (setq org-hide-emphasis-markers t)
 #+end_src
 * Packages
 ** Visual improvements
@@ -450,25 +274,6 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :config
        (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
    #+end_src
-** pdf-tools
-   Improved PDF reading experience.
-   #+begin_src emacs-lisp
-     (use-package pdf-tools
-       :ensure t
-       :pin manual
-       :config
-       (pdf-tools-install)
-       (setq-default pdf-view-display-size 'fit-width)
-       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-       :custom
-       (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
-     (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-	   TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-	   TeX-source-correlate-start-server t)
-     (add-hook 'TeX-after-compilation-finished-functions
-		 #'TeX-revert-document-buffer)
-     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
-   #+end_src
 ** pop-up kill ring
    A nice pop-up that lets you navigate through your killring history.
    #+begin_src emacs-lisp
@@ -486,7 +291,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
 			       (agenda . 10)
 			       (bookmarks . 5)
 			       (projects . 5)))
-       (setq dashboard-startup-banner "~/small_lain.png")
+       (setq dashboard-startup-banner "~/Dropbox/small_lain.png")
        (setq dashboard-banner-logo-title "Welcome to Emacs!"))
    #+end_src
 ** Dired
@@ -515,19 +320,6 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	(ido-vertical-mode 1))
       (setq ido-vertical-define-keys 'C-n-and-C-p-only)
     #+end_src
-** vertico
-   performant and minimalistic vertical completion UI
-   #+begin_src emacs-lisp
-     (use-package vertico
-       :ensure t
-       :init
-       (vertico-mode))
-
-     (use-package savehist
-       :ensure t
-       :init
-       (savehist-mode))
-   #+end_src
 ** smex
     ido-like behavior for M-x. remembers your most frequently called commands.
     #+begin_src emacs-lisp
@@ -543,18 +335,6 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :ensure t
        :bind
        ("M-s" . avy-goto-char))
-   #+end_src
-** blacken
-   PEP8 formatting for Python documents with Black.
-   #+begin_src emacs-lisp
-     (use-package blacken
-       :ensure t)
-   #+end_src
-** rainbow
-   #+begin_src emacs-lisp
-     (use-package rainbow-mode
-       :ensure t
-       :init (add-hook 'prog-mode-hook 'rainbow-mode))
    #+end_src
 ** switch-window
    Better window switching.
@@ -614,7 +394,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :init
        (add-hook 'after-init-hook 'global-company-mode))
    #+end_src
-** company quick-help mode
+*** company quick-help mode
    #+begin_src emacs-lisp
      (use-package company-quickhelp
        :ensure t
@@ -663,7 +443,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
        )
      (add-hook 'olivetti-mode-hook 'my-buffer-face-mode-serif)
    #+end_src
-* HTMLize
+** HTMLize
 We install this package so org-mode will export HTML files with syntax highlighting within code blocks.
 #+begin_src emacs-lisp
   (use-package htmlize
