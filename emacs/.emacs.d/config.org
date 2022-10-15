@@ -13,7 +13,13 @@
      (menu-bar-mode -1)
      (scroll-bar-mode -1)
      (set-fringe-mode 10)
+     (visual-line-mode)
    #+end_src
+** Set font
+#+begin_src emacs-lisp
+    (when (member "Source Code Pro" (font-family-list))
+      (set-frame-font "Source Code Pro-14" t t))
+#+end_src
 ** Autorefresh dired
    #+begin_src emacs-lisp
      (add-hook 'dired-mode-hook 'auto-revert-mode)
@@ -239,6 +245,24 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :bind
        ("C-c t". my-google-translate-at-point))
    #+end_src
+** evil-mode
+
+#+begin_src emacs-lisp
+  (use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
+#+end_src
+
 ** elfeed
    Read RSS using elfeed.
    #+begin_src emacs-lisp
@@ -508,6 +532,8 @@ Use org journal for day-to-day journal entries.
     :config
     (setq org-journal-dir "~/Dropbox/org/journal/"
 	  org-journal-date-format "%A, %d %B %Y"))
+  ;; The built-in calendar mode mappings for org-journal
+  ;; conflict with evil bindings
 #+end_src
 * Word processing
 
@@ -555,7 +581,7 @@ Activate with C-;
 #+begin_src emacs-lisp
   (use-package doom-themes
     :ensure t)
-  (load-theme 'doom-lantern t)
+  (load-theme 'doom-dracula t)
 #+end_src
 * Enable wrap-region by default
 Allows us to surround text with e.g. quotation marks.
