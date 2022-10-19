@@ -248,19 +248,35 @@ Which-key provides a helpful context menu whenever chords are engaged.
 ** evil-mode
 
 #+begin_src emacs-lisp
-  (use-package evil
-  :ensure t
-  :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode 1))
+    (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1))
 
-(use-package evil-collection
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+
+  ;; undo please!
+  (use-package undo-tree
+  :ensure t
   :after evil
+  :diminish
+  :config
+  (evil-set-undo-system 'undo-tree)
+  (global-undo-tree-mode 1))
+
+  ;; emulate the brilliant vim surround plugin
+  (use-package evil-surround
   :ensure t
   :config
-  (evil-collection-init))
+  (global-evil-surround-mode 1))
+
 #+end_src
 
 ** elfeed
@@ -312,7 +328,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
 			       (agenda . 10)
 			       (bookmarks . 5)
 			       (projects . 5)))
-       (setq dashboard-startup-banner "~/Dropbox/small_lain.png")
+       (setq dashboard-startup-banner "~/Pictures/pic2.png")
        (setq dashboard-banner-logo-title "Welcome to Emacs!"))
    #+end_src
 ** Dired
@@ -470,6 +486,12 @@ Which-key provides a helpful context menu whenever chords are engaged.
 We install this package so org-mode will export HTML files with syntax highlighting within code blocks.
 #+begin_src emacs-lisp
   (use-package htmlize
+    :ensure t)
+#+end_src
+** Vterm
+Let's get a good terminal in emacs!
+#+begin_src emacs-lisp
+  (use-package vterm
     :ensure t)
 #+end_src
 
