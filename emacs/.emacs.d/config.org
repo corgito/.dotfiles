@@ -116,7 +116,8 @@ Hide certain minor modes in the status bar.
    Set modifier key.
    #+begin_src emacs-lisp
      (when (eq system-type 'darwin)
-       (setq mac-right-option-modifier 'none))
+       (setq mac-right-option-modifier 'none)
+       (setq mac-command-modifier 'meta))
    #+end_src
 
 ** Symlinked files
@@ -621,8 +622,8 @@ Allows us to surround text with e.g. quotation marks.
 ** eglot
 Minimal IDE-like features for emacs.
 #+begin_src emacs-lisp
-  (use-package eglot
-    :ensure t)
+  ;(use-package eglot
+  ;  :ensure t)
 #+end_src
 ** Disable python interpreter warning
 #+begin_src emacs-lisp
@@ -639,5 +640,24 @@ Minimal IDE-like features for emacs.
     :ensure t)
   (add-hook 'writeroom-mode-enable-hook 'my-buffer-face-mode-serif)
   (add-hook 'writeroom-mode-disable-hook 'my-buffer-face-mode-sans)
+#+end_src
+* Edit FF windows with Emacs
+#+begin_src emacs-lisp
+  (use-package edit-server
+    :ensure t
+    :commands edit-server-start
+    :init (if after-init-time
+		(edit-server-start)
+	      (add-hook 'after-init-hook
+			#'(lambda() (edit-server-start))))
+    :config (setq edit-server-new-frame-alist
+		  '((name . "Edit with Emacs FRAME")
+		    (top . 200)
+		    (left . 200)
+		    (width . 80)
+		    (height . 25)
+		    (minibuffer . t)
+		    (menu-bar-lines . t)
+		    (window-system . x))))
 #+end_src
 
