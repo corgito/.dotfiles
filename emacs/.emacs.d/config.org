@@ -13,7 +13,7 @@
      (menu-bar-mode -1)
      (scroll-bar-mode -1)
      (set-fringe-mode 10)
-     (visual-line-mode)
+     (global-visual-line-mode)
    #+end_src
 ** Set font
 #+begin_src emacs-lisp
@@ -255,7 +255,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
     (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
     (setq evil-want-keybinding nil)
     :config
-    (evil-mode 1))
+    )
 
   (use-package evil-collection
     :after evil
@@ -660,4 +660,5 @@ Minimal IDE-like features for emacs.
 		    (menu-bar-lines . t)
 		    (window-system . x))))
 #+end_src
+
 
