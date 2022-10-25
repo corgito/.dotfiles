@@ -143,6 +143,30 @@ Don't warn for large files.
      (global-set-key (kbd "C-c a") #'org-agenda)
      (global-set-key (kbd "C-c c") #'org-capture)
    #+end_src
+** Capture templates
+#+begin_src emacs-lisp
+  (setq org-capture-templates
+     '(("p" "Personal templates")
+       ("pt" "TODO entry" entry
+	(file+headline "~/Dropbox/Notes/personal.org" "Capture")
+	(file "~/Dropbox/org/tpl-todo.txt"))
+       ("pj" "Journal entry" entry
+	(file+olp+datetree "~/Dropbox/org/journal.org")
+	"* %U - %^{Activity}")
+       ("pg" "Guitar journal entry" entry
+	(file+olp+datetree "~/Dropbox/Guitar/guitar_diary.org")
+	"* %U - %^{Activity}")
+       ("w" "Work templates")
+       ("wt" "TODO entry" entry
+	(file+headline "~/Dropbox/Notes/CHN.org" "Capture")
+	(file "~/Dropbox/org/tpl-todo.txt"))
+       ("wh" "Heroes TODO entry" entry
+	(file+headline "~/Dropbox/Work/2022 Human Needs Hero/2022_Human_Needs_Hero_Notes.org" "Capture")
+	(file "~/Dropbox/org/tpl-todo.txt"))
+       ("ww" "Webinar entry" entry
+	(file+headline "~/Dropbox/Notes/CHN.org" "Capture")
+	(file "~/Dropbox/org/webinar-todo.txt"))))
+#+end_src
 ** Multi-state workflow
    #+begin_src emacs-lisp
      (setq org-todo-keywords
@@ -454,12 +478,6 @@ Which-key provides a helpful context menu whenever chords are engaged.
      (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
    #+end_src
-** swiper
-   #+begin_src emacs-lisp
-     (use-package swiper
-       :ensure t
-       :bind ("C-s" . swiper))
-   #+end_src
 ** Multiple Cursors
    Select multiple instances of the same selection. Super useful for replacing variables.
    #+begin_src emacs-lisp
@@ -691,4 +709,11 @@ Minimal IDE-like features for emacs.
   (global-set-key (kbd "C-x l") 'counsel-locate)
   (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+#+end_src
+* hydra
+This is a package for GNU Emacs that can be used to tie related commands into a family of short bindings with a common prefix - a Hydra.
+#+begin_src emacs-lisp
+  (use-package hydra
+    :ensure t)
+  (load "~/.emacs.d/hydras.el")
 #+end_src
