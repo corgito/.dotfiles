@@ -228,6 +228,14 @@ Configure Babel for use with Python
    'org-babel-load-languages
    '((python . t)))
 #+end_src
+
+** Auto bulleted lists
+Use more normal behavior for lists in org mode
+#+begin_src emacs-lisp
+  (use-package org-autolist
+    :ensure t
+    :hook (org-mode . org-autolist-mode))
+#+end_src
 * Packages
 ** Visual improvements
 *** Which-key
