@@ -3,9 +3,9 @@
 * Aliases
 ** Yes/Or/No
    Simple y/or/n substiution for yes/or/no prompts
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
     (defalias 'yes-or-no-p 'y-or-n-p)
-   #+end_src
+#+end_src
 * Visual and quality of life improvements
 ** No toolbar/menubar/scrollbar
    #+begin_src emacs-lisp
@@ -23,10 +23,6 @@
 ** Autorefresh dired
    #+begin_src emacs-lisp
      (add-hook 'dired-mode-hook 'auto-revert-mode)
-   #+end_src
-** Line numbers
-   #+begin_src emacs-lisp
-     (global-linum-mode t)
    #+end_src
 ** Space in minibuffer
 Don't use the spacebar for auto-completion in the minibuffer.
@@ -301,13 +297,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
     (evil-collection-init))
 
   ;; undo please!
-  (use-package undo-tree
-  :ensure t
-  :after evil
-  :diminish
-  :config
-  (evil-set-undo-system 'undo-tree)
-  (global-undo-tree-mode 1))
+  
 
   ;; emulate the brilliant vim surround plugin
   (use-package evil-surround
@@ -315,6 +305,18 @@ Which-key provides a helpful context menu whenever chords are engaged.
   :config
   (global-evil-surround-mode 1))
 
+#+end_src
+** undo tree
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :after evil
+    :diminish
+    :config
+    (evil-set-undo-system 'undo-tree)
+    (global-undo-tree-mode 1))
+  ;; Prevent undo tree files from polluting your git repo
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
 #+end_src
 
 ** elfeed
@@ -635,7 +637,16 @@ Activate with C-;
 #+begin_src emacs-lisp
   (use-package doom-themes
     :ensure t)
-  (load-theme 'doom-dracula t)
+  (use-package emacs
+    :init
+    ;; Add all your customizations prior to loading the themes
+    (setq modus-themes-italic-constructs t
+	  modus-themes-bold-constructs nil
+	  modus-themes-region '(bg-only no-extend))
+    :config
+    ;; Load the theme of your choice:
+    (load-theme 'modus-operandi) ;; OR (load-theme 'modus-vivendi)
+    :bind ("<f5>" . modus-themes-toggle))
 #+end_src
 * Enable wrap-region by default
 Allows us to surround text with e.g. quotation marks.
@@ -724,4 +735,10 @@ This is a package for GNU Emacs that can be used to tie related commands into a 
   (use-package hydra
     :ensure t)
   (load "~/.emacs.d/hydras.el")
+#+end_src
+* pdf tools
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+    :ensure t)
+  (add-hook 'prog-mode-hook 'linum-on)
 #+end_src
