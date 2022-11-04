@@ -740,5 +740,4 @@ This is a package for GNU Emacs that can be used to tie related commands into a 
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :ensure t)
-  (add-hook 'prog-mode-hook 'linum-on)
 #+end_src
