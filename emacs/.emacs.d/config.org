@@ -526,8 +526,7 @@ We install this package so org-mode will export HTML files with syntax highlight
 * Buffers
 ** enable ibuffer
    #+begin_src emacs-lisp
-     (global-set-key (kbd "C-x b") 'ibuffer)
-     (global-set-key [remap list-buffers] 'ibuffer)
+     ; (global-set-key (kbd "C-x b") 'ibuffer)
    #+end_src
    
 * Custom functions
