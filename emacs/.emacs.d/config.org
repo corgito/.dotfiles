@@ -522,12 +522,6 @@ We install this package so org-mode will export HTML files with syntax highlight
   (use-package htmlize
     :ensure t)
 #+end_src
-** Vterm
-Let's get a good terminal in emacs!
-#+begin_src emacs-lisp
-  (use-package vterm
-    :ensure t)
-#+end_src
 
 * Buffers
 ** enable ibuffer
@@ -664,8 +658,8 @@ Allows us to surround text with e.g. quotation marks.
 ** eglot
 Minimal IDE-like features for emacs.
 #+begin_src emacs-lisp
-  ;(use-package eglot
-  ;  :ensure t)
+  (use-package eglot
+    :ensure t)
 #+end_src
 ** Disable python interpreter warning
 #+begin_src emacs-lisp
@@ -740,4 +734,10 @@ This is a package for GNU Emacs that can be used to tie related commands into a 
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :ensure t)
+#+end_src
+* vterm
+Let's use a good terminal emulator in emacs!
+#+begin_src emacs-lisp
+    (use-package vterm
+      :ensure t)
 #+end_src
