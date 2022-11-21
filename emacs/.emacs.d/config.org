@@ -652,6 +652,10 @@ Allows us to surround text with e.g. quotation marks.
     :ensure t)
   (yas-reload-all)
   (add-hook 'prog-mode-hook #'yas-minor-mode)
+
+  ;; We need to install snippets separately
+  (use-package yasnippet-snippets
+    :ensure t)
 #+end_src
 * IDE Features
 ** eglot
