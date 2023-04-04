@@ -638,7 +638,7 @@ Activate with C-;
 	  modus-themes-region '(bg-only no-extend))
     :config
     ;; Load the theme of your choice:
-    (load-theme 'modus-operandi) ;; OR (load-theme 'modus-vivendi)
+    (load-theme 'doom-one) ;; OR (load-theme 'modus-vivendi)
     :bind ("<f5>" . modus-themes-toggle))
 #+end_src
 * Enable wrap-region by default
