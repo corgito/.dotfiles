@@ -52,6 +52,13 @@ Place backup files in their own directory.
    #+begin_src emacs-lisp
      (setq scroll-conservatively 100)
    #+end_src
+
+** Better sentence navigation
+I don't use two spaces between sentences, so M-a/M-e only moves between paragraphs.
+#+begin_src emacs-lisp
+  (setq sentence-end-double-space nil)
+#+end_src
+
 ** Turn off the bell
    #+begin_src emacs-lisp
      (setq ring-bell-function 'ignore)
