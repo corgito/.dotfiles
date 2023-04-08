@@ -13,8 +13,12 @@
      (menu-bar-mode -1)
      (scroll-bar-mode -1)
      (set-fringe-mode 10)
-     (global-visual-line-mode)
    #+end_src
+** Display relative line numbers
+#+begin_src emacs-lisp
+    (display-line-numbers-mode 1)
+    (setq display-line-numbers 'relative)
+#+end_src
 ** Set font
 #+begin_src emacs-lisp
     (when (member "Source Code Pro" (font-family-list))
@@ -290,6 +294,8 @@ Which-key provides a helpful context menu whenever chords are engaged.
     :config
     )
 
+  (evil-mode)
+
   (use-package evil-collection
     :after evil
     :ensure t
@@ -297,7 +303,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
     (evil-collection-init))
 
   ;; undo please!
-  
+
 
   ;; emulate the brilliant vim surround plugin
   (use-package evil-surround
