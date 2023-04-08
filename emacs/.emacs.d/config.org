@@ -1,4 +1,4 @@
-#+title: Emacs Configuration File
+ #+title: Emacs Configuration File
 #+author: Nicolai Haddal
 * Aliases
 ** Yes/Or/No
@@ -633,6 +633,7 @@ Activate with C-;
   (use-package emacs
     :init
     :config
+    ;; Load the theme of your choice:
     (load-theme 'doom-one t))
 #+end_src
 * Enable wrap-region by default
@@ -738,3 +739,10 @@ Let's use a good terminal emulator in emacs!
     (use-package vterm
       :ensure t)
 #+end_src
+* python-venv
+#+begin_src emacs-lisp
+  (use-package pyvenv-auto
+    :ensure t
+    :hook ((python-mode . pyvenv-auto-run)))
+#+end_src
+
