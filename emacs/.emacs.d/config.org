@@ -1,4 +1,4 @@
- #+title: Emacs Configuration File
+#+title: Emacs Configuration File
 #+author: Nicolai Haddal
 * Aliases
 ** Yes/Or/No
@@ -18,7 +18,7 @@
 ** Set font
 #+begin_src emacs-lisp
     (when (member "Source Code Pro" (font-family-list))
-      (set-frame-font "Source Code Pro-14" t t))
+      (set-frame-font "Source Code Pro-16" t t))
 #+end_src
 ** Autorefresh dired
    #+begin_src emacs-lisp
@@ -286,33 +286,6 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :bind
        ("C-c t". my-google-translate-at-point))
    #+end_src
-** evil-mode
-
-#+begin_src emacs-lisp
-    (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-    (setq evil-want-keybinding nil)
-    :config
-    )
-
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (evil-collection-init))
-
-  ;; undo please!
-  
-
-  ;; emulate the brilliant vim surround plugin
-  (use-package evil-surround
-  :ensure t
-  :config
-  (global-evil-surround-mode 1))
-
-#+end_src
 ** undo tree
 #+begin_src emacs-lisp
   (use-package undo-tree
@@ -734,3 +707,39 @@ Let's use a good terminal emulator in emacs!
     :hook ((python-mode . pyvenv-auto-run)))
 #+end_src
 
+
+** evil-mode
+
+#+begin_src emacs-lisp
+  ;;; Vim Bindings
+  (use-package evil
+    :ensure t
+    :bind (("<escape>" . keyboard-escape-quit))
+    :init
+    ;; allows for using cgn
+    ;; (setq evil-search-module 'evil-search)
+    (setq evil-want-keybinding nil)
+    ;; no vim insert bindings
+    (setq evil-undo-system 'undo-fu)
+    :config
+    (evil-mode 1))
+
+  ;;; Vim Bindings Everywhere else
+  (use-package evil-collection
+    :ensure t
+    :after evil
+    :config
+    (setq evil-want-integration t)
+    (evil-collection-init))
+
+  ;; emulate the brilliant vim surround plugin
+  (use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode 1))
+
+  ;; relative line and line number
+  (setq display-line-numbers-type 'relative) 
+  (global-display-line-numbers-mode)
+
+#+end_src
