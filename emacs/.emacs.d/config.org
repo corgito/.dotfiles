@@ -239,6 +239,17 @@ Use more normal behavior for lists in org mode
     :ensure t
     :hook (org-mode . org-autolist-mode))
 #+end_src
+
+** Displaying inline images
+Display images inline in org mode using the path to the file in double brackets: [[~/path/to/file]]
+Set image width with the following properties:
+1. #+ATTR_ORG: :width 100
+2. #+ATTR_HTML: width="100px"
+We change the variable org-image-actual-width to 'nil' to allow modifying the width of images displayed inline within org mode.
+#+begin_src emacs-lisp
+  (setq org-image-actual-width nil)
+#+end_src
+
 * Packages
 ** Visual improvements
 *** Which-key
