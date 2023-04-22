@@ -754,3 +754,14 @@ Let's use a good terminal emulator in emacs!
   (global-display-line-numbers-mode)
 
 #+end_src
+
+** lsp-pyright
+For all our python needs
+#+begin_src emacs-lisp
+  (use-package lsp-pyright
+    :ensure t
+    :hook (python-mode . (lambda ()
+			    (require 'lsp-pyright)
+			    (lsp))))  ; or lsp-deferred
+
+#+end_src
