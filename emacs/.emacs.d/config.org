@@ -213,6 +213,10 @@ Don't warn for large files.
    #+begin_src emacs-lisp
 	  (setq org-clock-sound "~/Dropbox/yousuffer.wav")
    #+end_src
+** Disable todo selection popup
+#+begin_src emacs-lisp
+  (setq org-use-fast-todo-selection 'expert)
+#+end_src
 ** Custom agenda views
 #+begin_src emacs-lisp
   (defun org-focus-private() "Set focus on private things." (interactive)
