@@ -355,16 +355,17 @@ Which-key provides a helpful context menu whenever chords are engaged.
    #+end_src
 ** Dashboard
    #+begin_src emacs-lisp
-     (use-package dashboard
-       :ensure t
-       :config
-       (dashboard-setup-startup-hook)
-       (setq dashboard-items '((recents . 5)
-			       (agenda . 10)
-			       (bookmarks . 5)
-			       (projects . 5)))
-       (setq dashboard-startup-banner "~/Pictures/pic2.png")
-       (setq dashboard-banner-logo-title "Welcome to Emacs!"))
+	  (use-package dashboard
+	    :ensure t
+	    :config
+	    (dashboard-setup-startup-hook)
+	    (setq dashboard-items '((recents . 5)
+				    (agenda . 5)
+				    (bookmarks . 5)
+				    (projects . 5)))
+	    (setq dashboard-startup-banner 'official)
+	    (setq dashboard-banner-logo-title "Welcome to Emacs!")
+	    (setq dashboard-center-content t))
    #+end_src
 ** Dired
    Optimized configuration for file management in Emacs.
@@ -378,6 +379,11 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :config
        )
    #+end_src
+*** Insert spaces in minibuffer
+Don't use SPC to complete candidates in the minibuffer. I.e. space is a space.
+#+begin_src emacs-lisp
+  (define-key minibuffer-local-completion-map " " 'self-insert-command)
+#+end_src
 ** IDO
 *** Enable IDO
    #+begin_src emacs-lisp
@@ -394,15 +400,7 @@ Which-key provides a helpful context menu whenever chords are engaged.
 	(ido-vertical-mode 1))
       (setq ido-vertical-define-keys 'C-n-and-C-p-only)
     #+end_src
-** smex
-    ido-like behavior for M-x. remembers your most frequently called commands.
-    #+begin_src emacs-lisp
-      (use-package smex
-	:ensure t
-	:init (smex-initialize)
-	:bind
-	("M-x" . smex))
-    #+end_src
+
 ** avy
    #+begin_src emacs-lisp 
      (use-package avy
@@ -672,7 +670,7 @@ Minimal IDE-like features for emacs.
 #+end_src
 * ivy/counsel/swiper
 #+begin_src emacs-lisp
-    (use-package counsel
+  (use-package counsel
       :ensure t)
   (ivy-mode)
   (setq ivy-use-virtual-buffers t)
@@ -750,11 +748,6 @@ Let's use a good terminal emulator in emacs!
   :ensure t
   :config
   (global-evil-surround-mode 1))
-
-  ;; relative line and line number
-  (setq display-line-numbers-type 'relative) 
-  (global-display-line-numbers-mode)
-
 #+end_src
 
 ** lsp-pyright
@@ -766,4 +759,16 @@ For all our python needs
 			    (require 'lsp-pyright)
 			    (lsp))))  ; or lsp-deferred
 
+#+end_src
+
+** treesitter
+Better syntax highlighting with tree-sitter.
+#+begin_src emacs-lisp
+  (use-package tree-sitter-langs
+    :ensure t)
+
+  (use-package tree-sitter
+    :ensure t)
+
+  (global-tree-sitter-mode)
 #+end_src
