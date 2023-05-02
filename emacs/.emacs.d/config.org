@@ -15,11 +15,6 @@
      (set-fringe-mode 10)
      (global-visual-line-mode)
    #+end_src
-** Set font
-#+begin_src emacs-lisp
-    (when (member "Source Code Pro" (font-family-list))
-      (set-frame-font "Source Code Pro-16" t t))
-#+end_src
 ** Autorefresh dired
    #+begin_src emacs-lisp
      (add-hook 'dired-mode-hook 'auto-revert-mode)
@@ -621,14 +616,28 @@ Activate with C-;
 * Theme
 ** Doom themes
 #+begin_src emacs-lisp
-  (use-package doom-themes
-    :ensure t)
   (use-package emacs
-    :init
-    :config
-    ;; Load the theme of your choice:
-    (load-theme 'doom-one t))
+  :config
+  (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
+
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs t
+        modus-themes-bold-constructs nil)
+
+  ;; Load the theme of your choice.
+  (load-theme 'modus-operandi)
+
+  (define-key global-map (kbd "<f5>") #'modus-themes-toggle))
 #+end_src
+
+
+** Set font
+#+begin_src emacs-lisp
+  (when (member "Source Code Pro" (font-family-list))
+    (set-frame-font "Source Code Pro-16" t t))
+  (set-face-attribute 'default nil :height 200)
+#+end_src
+
 * Enable wrap-region by default
 Allows us to surround text with e.g. quotation marks.
 #+begin_src emacs-lisp
@@ -772,3 +781,5 @@ Better syntax highlighting with tree-sitter.
 
   (global-tree-sitter-mode)
 #+end_src
+
+
