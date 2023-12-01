@@ -493,8 +493,10 @@ Don't use SPC to complete candidates in the minibuffer. I.e. space is a space.
 ** magit
    Git management.
    #+begin_src emacs-lisp
-     (use-package magit
-       :ensure t)
+	  (use-package magit
+	    :ensure t
+	    :bind ("C-x g" . magit-status)
+     )
    #+end_src
 ** olivetti
    Nice, centered mode for reading text.
