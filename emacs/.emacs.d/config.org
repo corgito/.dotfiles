@@ -784,4 +784,11 @@ Better syntax highlighting with tree-sitter.
   (global-tree-sitter-mode)
 #+end_src
 
-
+** god mode
+Why not
+#+begin_src emacs-lisp
+  (use-package god-mode
+    :ensure t)
+  (god-mode)
+  (global-set-key (kbd "<escape>") #'god-local-mode)
+#+end_src
