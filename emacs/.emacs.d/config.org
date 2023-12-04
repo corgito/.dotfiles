@@ -114,7 +114,50 @@ Hide certain minor modes in the status bar.
    #+begin_src emacs-lisp
      (setq org-startup-truncated nil)
    #+end_src
+** Which-key
+Which-key provides a helpful context menu whenever chords are engaged.
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :init
+    (which-key-mode))
+#+end_src
+** Beacon
+    Beacon shows you where your cursor is located when you switch to a buffer.
+    #+begin_src emacs-lisp
+      (use-package beacon
+	:ensure t
+	:init
+	(beacon-mode 1))
+    #+end_src
+** all-the-icons
+   #+begin_src emacs-lisp
+     (use-package all-the-icons
+       :ensure t
+       :if (display-graphic-p))
 
+   #+end_src
+** Dashboard
+   #+begin_src emacs-lisp
+	  (use-package dashboard
+	    :ensure t
+	    :config
+	    (dashboard-setup-startup-hook)
+	    (setq dashboard-items '((recents . 5)
+				    (agenda . 5)
+				    (bookmarks . 5)
+				    (projects . 5)))
+	    (setq dashboard-startup-banner 'official)
+	    (setq dashboard-banner-logo-title "Welcome to Emacs!")
+	    (setq dashboard-center-content t))
+   #+end_src
+** Doom modeline
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1))
+#+end_src
+* OS-specific settings
 ** Mac-specific setings
    Set modifier key.
    #+begin_src emacs-lisp
@@ -122,7 +165,24 @@ Hide certain minor modes in the status bar.
        (setq mac-right-option-modifier 'none)
        (setq mac-command-modifier 'meta))
    #+end_src
-
+** Dired
+   Optimized configuration for file management in Emacs.
+   #+begin_src emacs-lisp
+     (use-package dired
+       :ensure nil
+       :custom
+       (when (eq system-type 'darwin)
+	 ((insert-directory-program "gls" dired-use-ls-dired t)
+		(dired-listing-switches "-agho --group-directories-first")))
+       :config
+       )
+   #+end_src
+*** Insert spaces in minibuffer
+Don't use SPC to complete candidates in the minibuffer. I.e. space is a space.
+#+begin_src emacs-lisp
+  (define-key minibuffer-local-completion-map " " 'self-insert-command)
+#+end_src
+* File Management
 ** Symlinked files
 Don't warn for following symlinked files.
 #+begin_src emacs-lisp
@@ -249,31 +309,14 @@ We change the variable org-image-actual-width to 'nil' to allow modifying the wi
   (setq org-image-actual-width nil)
 #+end_src
 
-* Packages
-** Visual improvements
-*** Which-key
-Which-key provides a helpful context menu whenever chords are engaged.
+** HTMLize
+We install this package so org-mode will export HTML files with syntax highlighting within code blocks.
 #+begin_src emacs-lisp
-  (use-package which-key
-    :ensure t
-    :init
-    (which-key-mode))
+  (use-package htmlize
+    :ensure t)
 #+end_src
-*** Beacon
-    Beacon shows you where your cursor is located when you switch to a buffer.
-    #+begin_src emacs-lisp
-      (use-package beacon
-	:ensure t
-	:init
-	(beacon-mode 1))
-    #+end_src
-** zen mode
-   #+begin_src emacs-lisp
-     (use-package zen-mode
-       :ensure t
-       :init
-       (require 'zen-mode))
-   #+end_src
+
+* News and word processing tasks
 ** google translate
    #+begin_src emacs-lisp
 
@@ -296,19 +339,6 @@ Which-key provides a helpful context menu whenever chords are engaged.
        :bind
        ("C-c t". my-google-translate-at-point))
    #+end_src
-** undo tree
-#+begin_src emacs-lisp
-  (use-package undo-tree
-    :ensure t
-    :after evil
-    :diminish
-    :config
-    (evil-set-undo-system 'undo-tree)
-    (global-undo-tree-mode 1))
-  ;; Prevent undo tree files from polluting your git repo
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-#+end_src
-
 ** elfeed
    Read RSS using elfeed.
    #+begin_src emacs-lisp
@@ -329,79 +359,19 @@ Which-key provides a helpful context menu whenever chords are engaged.
        (setq-default elfeed-search-title-max-width 100)           
        (setq-default elfeed-search-title-min-width 100))
    #+end_src
-** CSV mode
-   #+begin_src emacs-lisp
-     (use-package csv-mode
-       :ensure t)
-   #+end_src
-** read epubs
+** read pubs
    #+begin_src emacs-lisp
      (use-package nov
        :ensure t
        :config
        (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
    #+end_src
-** pop-up kill ring
-   A nice pop-up that lets you navigate through your killring history.
-   #+begin_src emacs-lisp
-     (use-package popup-kill-ring
-       :ensure t
-       :bind ("M-y" . popup-kill-ring))
-   #+end_src
-** Dashboard
-   #+begin_src emacs-lisp
-	  (use-package dashboard
-	    :ensure t
-	    :config
-	    (dashboard-setup-startup-hook)
-	    (setq dashboard-items '((recents . 5)
-				    (agenda . 5)
-				    (bookmarks . 5)
-				    (projects . 5)))
-	    (setq dashboard-startup-banner 'official)
-	    (setq dashboard-banner-logo-title "Welcome to Emacs!")
-	    (setq dashboard-center-content t))
-   #+end_src
-** Dired
-   Optimized configuration for file management in Emacs.
-   #+begin_src emacs-lisp
-     (use-package dired
-       :ensure nil
-       :custom
-       (when (eq system-type 'darwin)
-	 ((insert-directory-program "gls" dired-use-ls-dired t)
-		(dired-listing-switches "-agho --group-directories-first")))
-       :config
-       )
-   #+end_src
-*** Insert spaces in minibuffer
-Don't use SPC to complete candidates in the minibuffer. I.e. space is a space.
-#+begin_src emacs-lisp
-  (define-key minibuffer-local-completion-map " " 'self-insert-command)
-#+end_src
-** IDO
-*** Enable IDO
-   #+begin_src emacs-lisp
-     (setq ido-enable-flex-matching nil)
-     (setq ido-create-new-buffer 'always)
-     (setq ido-everywhere t)
-     (ido-mode 1)
-   #+end_src
-*** id-vertical
-    #+begin_src emacs-lisp
-      (use-package ido-vertical-mode
-	:ensure t
-	:init
-	(ido-vertical-mode 1))
-      (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-    #+end_src
-
 ** avy
    #+begin_src emacs-lisp 
      (use-package avy
        :ensure t
        :bind
-       ("M-s" . avy-goto-char))
+       ("M-s" . avy-goto-char-timer))
    #+end_src
 ** switch-window
    Better window switching.
@@ -418,13 +388,6 @@ Don't use SPC to complete candidates in the minibuffer. I.e. space is a space.
        :bind
 	 ([remap other-window] . switch-window))
    #+end_src
-** Flycheck
-   Improved syntax checking
-   #+begin_src emacs-lisp
-	  (use-package flycheck
-	    :ensure t
-	  )
-   #+end_src
 ** hungry-delete
    Hungry delete whitespace
    #+begin_src emacs-lisp
@@ -439,63 +402,6 @@ Don't use SPC to complete candidates in the minibuffer. I.e. space is a space.
        :ensure t
        )
    #+end_src
-** rainbow-delimiters
-   #+begin_src emacs-lisp
-     (use-package rainbow-delimiters
-       :ensure t
-       :init
-       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-   #+end_src
-** all-the-icons
-   #+begin_src emacs-lisp
-     (use-package all-the-icons
-       :ensure t
-       :if (display-graphic-p))
-
-   #+end_src
-** company
-   Company mode is an extension that allows for autocompletion.
-   #+begin_src emacs-lisp
-     (use-package company
-       :ensure t
-       :init
-       (add-hook 'after-init-hook 'global-company-mode))
-   #+end_src
-*** company quick-help mode
-   #+begin_src emacs-lisp
-     (use-package company-quickhelp
-       :ensure t
-       :init
-       (company-quickhelp-mode))
-   #+end_src
-** projectile
-   #+begin_src emacs-lisp
-     (use-package projectile
-       :ensure t)
-     (projectile-mode +1)
-     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-   #+end_src
-** Multiple Cursors
-   Select multiple instances of the same selection. Super useful for replacing variables.
-   #+begin_src emacs-lisp
-     (use-package multiple-cursors
-      :ensure t
-      :bind ("C-c q" . 'mark-next-like-this))
-#+end_src
-** expand-region
-   Expand your selection by region with C-q! 
-   #+begin_src emacs-lisp
-     (use-package expand-region
-       :ensure t
-       :bind ("C-q" . er/expand-region))
-   #+end_src
-** magit
-   Git management.
-   #+begin_src emacs-lisp
-     (use-package magit
-       :ensure t)
-   #+end_src
 ** olivetti
    Nice, centered mode for reading text.
    #+begin_src emacs-lisp
@@ -504,13 +410,6 @@ Don't use SPC to complete candidates in the minibuffer. I.e. space is a space.
        )
      (add-hook 'olivetti-mode-hook 'my-buffer-face-mode-serif)
    #+end_src
-** HTMLize
-We install this package so org-mode will export HTML files with syntax highlighting within code blocks.
-#+begin_src emacs-lisp
-  (use-package htmlize
-    :ensure t)
-#+end_src
-
 * Buffers
 ** enable ibuffer
    #+begin_src emacs-lisp
@@ -573,7 +472,6 @@ Use org journal for day-to-day journal entries.
   ;; conflict with evil bindings
 #+end_src
 * Word processing
-
 ** Flyspell configuration
    Spell-checking with flyspell. Enable for all text modes.
    #+begin_src emacs-lisp
@@ -585,18 +483,17 @@ Use org journal for day-to-day journal entries.
 	  (define-key flyspell-mouse-map [mouse-3] #'undefined)))
    #+end_src
 
-* Doom modeline
+** writeroom mode
 #+begin_src emacs-lisp
-  (use-package doom-modeline
-    :ensure t
-    :init (doom-modeline-mode 1))
+  (use-package writeroom-mode
+    :ensure t)
+  (add-hook 'writeroom-mode-enable-hook 'my-buffer-face-mode-serif)
+  (add-hook 'writeroom-mode-disable-hook 'my-buffer-face-mode-sans)
 #+end_src
-* Support for markdown mode
+** pdf tools
 #+begin_src emacs-lisp
-  (use-package markdown-mode
-    :ensure t
-    :mode ("README\\.md\\'" . gfm-mode)
-    :init (setq markdown-command "pandoc"))
+  (use-package pdf-tools
+    :ensure t)
 #+end_src
 * Wrap Region
 Wrap selection automatically with a quote, parenthesis, curly brackets.
@@ -614,7 +511,7 @@ Activate with C-;
     :ensure t)
 #+end_src
 * Theme
-** Doom themes
+** Modus themes
 #+begin_src emacs-lisp
   (use-package emacs
   :config
@@ -629,8 +526,6 @@ Activate with C-;
 
   (define-key global-map (kbd "<f5>") #'modus-themes-toggle))
 #+end_src
-
-
 ** Set font
 #+begin_src emacs-lisp
   (when (member "Source Code Pro" (font-family-list))
@@ -638,22 +533,6 @@ Activate with C-;
   (set-face-attribute 'default nil :height 200)
 #+end_src
 
-* Enable wrap-region by default
-Allows us to surround text with e.g. quotation marks.
-#+begin_src emacs-lisp
-  (wrap-region-mode t)
-#+end_src
-* YASnippet
-#+begin_src emacs-lisp
-  (use-package yasnippet
-    :ensure t)
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook #'yas-minor-mode)
-
-  ;; We need to install snippets separately
-  (use-package yasnippet-snippets
-    :ensure t)
-#+end_src
 * IDE Features
 ** eglot
 Minimal IDE-like features for emacs.
@@ -665,70 +544,18 @@ Minimal IDE-like features for emacs.
 #+begin_src emacs-lisp
   (setq python-shell-completion-native-disabled-interpreters '("python"))
 #+end_src
-* tab bar history
-#+begin_src emacs-lisp
-  (global-set-key (kbd "M-[") 'tab-bar-history-back)
-  (global-set-key (kbd "M-]") 'tab-bar-history-forward)
-#+end_src
-* writeroom mode
-#+begin_src emacs-lisp
-  (use-package writeroom-mode
-    :ensure t)
-  (add-hook 'writeroom-mode-enable-hook 'my-buffer-face-mode-serif)
-  (add-hook 'writeroom-mode-disable-hook 'my-buffer-face-mode-sans)
-#+end_src
-* ivy/counsel/swiper
-#+begin_src emacs-lisp
-  (use-package counsel
-      :ensure t)
-  (ivy-mode)
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  ;; enable this if you want `swiper' to use it
-  ;; (setq search-default-mode #'char-fold-to-regexp)
-  (global-set-key "\C-s" 'swiper)
-  (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  (global-set-key (kbd "<f6>") 'ivy-resume)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
-  (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  (global-set-key (kbd "C-c g") 'counsel-git)
-  (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  (global-set-key (kbd "C-c k") 'counsel-ag)
-  (global-set-key (kbd "C-x l") 'counsel-locate)
-  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-#+end_src
-* hydra
-This is a package for GNU Emacs that can be used to tie related commands into a family of short bindings with a common prefix - a Hydra.
-#+begin_src emacs-lisp
-  (use-package hydra
-    :ensure t)
-  (load "~/.emacs.d/hydras.el")
-#+end_src
-* pdf tools
-#+begin_src emacs-lisp
-  (use-package pdf-tools
-    :ensure t)
-#+end_src
-* vterm
+** vterm
 Let's use a good terminal emulator in emacs!
 #+begin_src emacs-lisp
     (use-package vterm
       :ensure t)
 #+end_src
-* python-venv
+** python-venv
 #+begin_src emacs-lisp
   (use-package pyvenv-auto
     :ensure t
     :hook ((python-mode . pyvenv-auto-run)))
 #+end_src
-
 
 ** evil-mode
 
@@ -782,4 +609,160 @@ Better syntax highlighting with tree-sitter.
   (global-tree-sitter-mode)
 #+end_src
 
+** Enable wrap-region by default
+Allows us to surround text with e.g. quotation marks.
+#+begin_src emacs-lisp
+  (wrap-region-mode t)
+#+end_src
+** YASnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t)
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook #'yas-minor-mode)
 
+  ;; We need to install snippets separately
+  (use-package yasnippet-snippets
+    :ensure t)
+#+end_src
+** projectile
+   #+begin_src emacs-lisp
+     (use-package projectile
+       :ensure t)
+     (projectile-mode +1)
+     (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+   #+end_src
+** Multiple Cursors
+   Select multiple instances of the same selection. Super useful for replacing variables.
+   #+begin_src emacs-lisp
+     (use-package multiple-cursors
+      :ensure t
+      :bind ("C-c q" . 'mark-next-like-this))
+#+end_src
+** undo tree
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :after evil
+    :diminish
+    :config
+    (evil-set-undo-system 'undo-tree)
+    (global-undo-tree-mode 1))
+  ;; Prevent undo tree files from polluting your git repo
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+#+end_src
+
+** CSV mode
+   #+begin_src emacs-lisp
+     (use-package csv-mode
+       :ensure t)
+   #+end_src
+** pop-up kill ring
+   A nice pop-up that lets you navigate through your killring history.
+   #+begin_src emacs-lisp
+     (use-package popup-kill-ring
+       :ensure t
+       :bind ("M-y" . popup-kill-ring))
+   #+end_src
+** Flycheck
+   Improved syntax checking
+   #+begin_src emacs-lisp
+	  (use-package flycheck
+	    :ensure t
+	  )
+   #+end_src
+** rainbow-delimiters
+   #+begin_src emacs-lisp
+     (use-package rainbow-delimiters
+       :ensure t
+       :init
+       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+   #+end_src
+** expand-region
+   Expand your selection by region with C-q! 
+   #+begin_src emacs-lisp
+     (use-package expand-region
+       :ensure t
+       :bind ("C-." . er/expand-region))
+   #+end_src
+** magit
+   Git management.
+   #+begin_src emacs-lisp
+     (use-package magit
+       :ensure t)
+   #+end_src
+** Support for markdown mode
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :mode ("README\\.md\\'" . gfm-mode)
+    :init (setq markdown-command "pandoc"))
+#+end_src
+* Completion: ivy/counsel/swiper
+#+begin_src emacs-lisp
+    (use-package counsel
+	:ensure t)
+    (ivy-mode)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    ;; enable this if you want `swiper' to use it
+    ;; (setq search-default-mode #'char-fold-to-regexp)
+    (global-set-key "\C-s" 'swiper)
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+    (global-set-key (kbd "<f1> l") 'counsel-find-library)
+    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    (global-set-key (kbd "C-c g") 'counsel-git)
+    (global-set-key (kbd "C-c s") 'counsel-rg)
+    (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    (global-set-key (kbd "C-c k") 'counsel-ag)
+    (global-set-key (kbd "C-x l") 'counsel-locate)
+    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+#+end_src
+** company
+   Company mode is an extension that allows for autocompletion.
+   #+begin_src emacs-lisp
+     (use-package company
+       :ensure t
+       :init
+       (add-hook 'after-init-hook 'global-company-mode))
+   #+end_src
+*** company quick-help mode
+   #+begin_src emacs-lisp
+     (use-package company-quickhelp
+       :ensure t
+       :init
+       (company-quickhelp-mode))
+   #+end_src
+** IDO
+*** Enable IDO
+   #+begin_src emacs-lisp
+     (setq ido-enable-flex-matching nil)
+     (setq ido-create-new-buffer 'always)
+     (setq ido-everywhere t)
+     (ido-mode 1)
+   #+end_src
+*** id-vertical
+    #+begin_src emacs-lisp
+      (use-package ido-vertical-mode
+	:ensure t
+	:init
+	(ido-vertical-mode 1))
+      (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+    #+end_src
+
+* hydra
+This is a package for GNU Emacs that can be used to tie related commands into a family of short bindings with a common prefix - a Hydra.
+#+begin_src emacs-lisp
+  (use-package hydra
+    :ensure t)
+  (load "~/.emacs.d/hydras.el")
+#+end_src
