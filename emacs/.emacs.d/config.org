@@ -165,6 +165,18 @@ Which-key provides a helpful context menu whenever chords are engaged.
        (setq mac-right-option-modifier 'none)
        (setq mac-command-modifier 'meta))
    #+end_src
+** WSL
+I use Emacs on Windows via WSL2. This means links won't open in my Windows-native default browser; instead, they open in the GUI version under Linux. This fixes that so we can visit links from Emacs directly:
+#+begin_src emacs-lisp
+  (when (and (eq system-type 'gnu/linux)
+	     (string-match
+	      "Linux.*Microsoft.*Linux"
+	      (shell-command-to-string "uname -a")))
+    (setq
+     browse-url-generic-program  "/mnt/c/Windows/System32/cmd.exe"
+     browse-url-generic-args     '("/c" "start")
+     browse-url-browser-function #'browse-url-generic))
+#+end_src
 ** Dired
    Optimized configuration for file management in Emacs.
    #+begin_src emacs-lisp
@@ -216,14 +228,8 @@ Don't warn for large files.
 	"* %U - %^{Activity}")
        ("w" "Work templates")
        ("wt" "TODO entry" entry
-	(file+headline "~/Dropbox/Notes/CHN.org" "Capture")
-	(file "~/Dropbox/org/tpl-todo.txt"))
-       ("wh" "Heroes TODO entry" entry
-	(file+headline "~/Dropbox/Work/2022 Human Needs Hero/2022_Human_Needs_Hero_Notes.org" "Capture")
-	(file "~/Dropbox/org/tpl-todo.txt"))
-       ("ww" "Webinar entry" entry
-	(file+headline "~/Dropbox/Notes/CHN.org" "Capture")
-	(file "~/Dropbox/org/webinar-todo.txt"))))
+	(file+headline "~/Dropbox/Notes/work.org" "Capture")
+	(file "~/Dropbox/org/tpl-todo.txt"))))
 #+end_src
 ** Multi-state workflow
    #+begin_src emacs-lisp
@@ -328,6 +334,8 @@ We install this package so org-mode will export HTML files with syntax highlight
        :functions (my-google-translate-at-point google-translate--search-tkk)
        :custom
        (google-translate-backend-method 'curl)
+       (google-translate-default-source-language "pl")
+       (google-translate-default-target-language "en")
        :config
        (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))
        (defun my-google-translate-at-point()
@@ -337,7 +345,8 @@ We install this package so org-mode will export HTML files with syntax highlight
 	     (google-translate-at-point)
 	   (google-translate-at-point-reverse)))
        :bind
-       ("C-c t". my-google-translate-at-point))
+       ("C-c t". google-translate-at-point)
+       ("C-c r". google-translate-at-point-reverse))
    #+end_src
 ** elfeed
    Read RSS using elfeed.
@@ -372,6 +381,10 @@ We install this package so org-mode will export HTML files with syntax highlight
        :ensure t
        :bind
        ("M-s" . avy-goto-char-timer))
+     ;;make avy slightly snappier
+     (defcustom avy-timeout-seconds 0.3
+       "How many seconds to wait for the second char."
+       :type 'float)
    #+end_src
 ** switch-window
    Better window switching.
@@ -430,7 +443,7 @@ We install this package so org-mode will export HTML files with syntax highlight
       (defun config-reload ()
 	(interactive)
 	(org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-      (global-set-key (kbd "C-c r") 'config-reload)
+      (global-set-key (kbd "C-c C-r") 'config-reload)
     #+end_src
 ** Yank whole line
    #+begin_src emacs-lisp
@@ -462,14 +475,9 @@ Use org journal for day-to-day journal entries.
   (use-package org-journal
     :ensure t
     :defer t
-    :init
-    ;; Change default prefix key; needs to be set before loading org-journal
-    (setq org-journal-prefix-key "C-c j")
     :config
     (setq org-journal-dir "~/Dropbox/org/journal/"
 	  org-journal-date-format "%A, %d %B %Y"))
-  ;; The built-in calendar mode mappings for org-journal
-  ;; conflict with evil bindings
 #+end_src
 * Word processing
 ** Flyspell configuration
@@ -565,7 +573,6 @@ Let's use a good terminal emulator in emacs!
 #+end_src
 
 ** evil-mode
-
 #+begin_src emacs-lisp
   ;;; Vim Bindings
   (use-package evil
@@ -578,7 +585,7 @@ Let's use a good terminal emulator in emacs!
     ;; no vim insert bindings
     (setq evil-undo-system 'undo-fu))
 
-  ;;; Vim Bindings Everywhere else
+   ;;; Vim Bindings Everywhere else
   (use-package evil-collection
     :ensure t
     :after evil
@@ -596,11 +603,11 @@ Let's use a good terminal emulator in emacs!
 ** lsp-pyright
 For all our python needs
 #+begin_src emacs-lisp
-  (use-package lsp-pyright
-    :ensure t
-    :hook (python-mode . (lambda ()
-			    (require 'lsp-pyright)
-			    (lsp))))  ; or lsp-deferred
+  ;; (use-package lsp-pyright
+  ;;   :ensure t
+  ;;   :hook (python-mode . (lambda ()
+  ;; 			  (require 'lsp-pyright)
+  ;; 			  (lsp))))  ; or lsp-deferred
 
 #+end_src
 
@@ -717,37 +724,57 @@ Allows us to surround text with e.g. quotation marks.
 ** Astro support
 Use emacs with astro.
 #+begin_src emacs-lisp
+  ;; WEB MODE
+  (use-package web-mode
+    :ensure t)
+
+  ;; ASTRO
+  (define-derived-mode astro-mode web-mode "astro")
   (setq auto-mode-alist
-      (append '((".*\\.astro\\'" . js-jsx-mode))
-	  auto-mode-alist))
+	(append '((".*\\.astro\\'" . astro-mode))
+		auto-mode-alist))
+
+  ;; Hook up to eglot
+  (use-package eglot
+    :config
+    (add-to-list 'eglot-server-programs
+		 '(astro-mode . ("astro-ls" "--stdio"
+				 :initializationOptions
+				 (:typescript (:tsdk "./node_modules/typescript/lib")))))
+    :init
+    ;; auto start eglot for astro-mode
+    (add-hook 'astro-mode-hook 'eglot-ensure))
+  ;; (setq auto-mode-alist
+  ;;     (append '((".*\\.astro\\'" . js-jsx-mode))
+  ;; 	auto-mode-alist))
 #+end_src
 * Completion: ivy/counsel/swiper
 #+begin_src emacs-lisp
-    (use-package counsel
-	:ensure t)
-    (ivy-mode)
-    (setq ivy-use-virtual-buffers t)
-    (setq enable-recursive-minibuffers t)
-    ;; enable this if you want `swiper' to use it
-    ;; (setq search-default-mode #'char-fold-to-regexp)
-    (global-set-key "\C-s" 'swiper)
-    (global-set-key (kbd "C-c C-r") 'ivy-resume)
-    (global-set-key (kbd "<f6>") 'ivy-resume)
-    (global-set-key (kbd "M-x") 'counsel-M-x)
-    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-    (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
-    (global-set-key (kbd "<f1> l") 'counsel-find-library)
-    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-    (global-set-key (kbd "C-c g") 'counsel-git)
-    (global-set-key (kbd "C-c s") 'counsel-rg)
-    (global-set-key (kbd "C-c j") 'counsel-git-grep)
-    (global-set-key (kbd "C-c k") 'counsel-ag)
-    (global-set-key (kbd "C-x l") 'counsel-locate)
-    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+  (use-package counsel
+      :ensure t)
+  (ivy-mode)					
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  ;; enable this if you want `swiper' to use it
+  ;; (setq search-default-mode #'char-fold-to-regexp)
+  (global-set-key "\C-s" 'swiper)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c s") 'counsel-rg)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+  (global-set-key (kbd "C-c o") 'counsel-outline)
+  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 #+end_src
 ** company
    Company mode is an extension that allows for autocompletion.
