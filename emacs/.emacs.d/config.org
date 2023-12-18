@@ -810,3 +810,12 @@ This is a package for GNU Emacs that can be used to tie related commands into a 
     :ensure t)
   (load "~/.emacs.d/hydras.el")
 #+end_src
+
+* Remote access over TRAMP
+To ensure a faster experience, disable version control over TRAMP:
+#+begin_src emacs-lisp
+  (setq vc-ignore-dir-regexp
+		       (format "\\(%s\\)\\|\\(%s\\)"
+			       vc-ignore-dir-regexp
+			       tramp-file-name-regexp))
+#+end_src
