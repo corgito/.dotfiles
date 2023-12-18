@@ -673,13 +673,6 @@ Allows us to surround text with e.g. quotation marks.
      (use-package csv-mode
        :ensure t)
    #+end_src
-** pop-up kill ring
-   A nice pop-up that lets you navigate through your killring history.
-   #+begin_src emacs-lisp
-     (use-package popup-kill-ring
-       :ensure t
-       :bind ("M-y" . popup-kill-ring))
-   #+end_src
 ** Flycheck
    Improved syntax checking
    #+begin_src emacs-lisp
@@ -751,7 +744,9 @@ Use emacs with astro.
 * Completion: ivy/counsel/swiper
 #+begin_src emacs-lisp
   (use-package counsel
-      :ensure t)
+      :ensure t
+      :bind
+      (("M-y" . 'counsel-yank-pop)))
   (ivy-mode)					
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
