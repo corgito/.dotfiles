@@ -157,6 +157,11 @@ Which-key provides a helpful context menu whenever chords are engaged.
     :ensure t
     :init (doom-modeline-mode 1))
 #+end_src
+** Zap up to char
+It makes much more sense to bind M-z to zap-up-to-char, not zap-to-char! 
+#+begin_src emacs-lisp
+  (bind-key "M-z" 'zap-up-to-char)
+#+end_src
 * OS-specific settings
 ** Mac-specific setings
    Set modifier key.
@@ -421,7 +426,6 @@ We install this package so org-mode will export HTML files with syntax highlight
      (use-package olivetti
        :ensure t
        )
-     (add-hook 'olivetti-mode-hook 'my-buffer-face-mode-serif)
    #+end_src
 * Buffers
 ** enable ibuffer
@@ -505,8 +509,6 @@ Use org journal for day-to-day journal entries.
 #+begin_src emacs-lisp
   (use-package writeroom-mode
     :ensure t)
-  (add-hook 'writeroom-mode-enable-hook 'my-buffer-face-mode-serif)
-  (add-hook 'writeroom-mode-disable-hook 'my-buffer-face-mode-sans)
 #+end_src
 ** pdf tools
 #+begin_src emacs-lisp
