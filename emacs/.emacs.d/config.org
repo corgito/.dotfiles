@@ -593,28 +593,103 @@ Don't warn for large files.
    #+end_src
 ** Org-roam
    #+begin_src emacs-lisp
-     (use-package org-roam
-       :ensure t
-       :config
-       (setq org-roam-directory (file-truename "~/Dropbox/org-roam"))
-       (org-roam-db-autosync-mode)
-       (add-to-list 'display-buffer-alist
-		       '("\\*org-roam\\*"
-			 (display-buffer-in-direction)
-			 (direction . right)
-			 (window-width . 0.33)
-			 (window-height . fit-window-to-buffer)))
-       (setq org-roam-mode-section-functions
-		(list #'org-roam-backlinks-section
-		      #'org-roam-reflinks-section
-		      ;; #'org-roam-unlinked-references-section
-		      ))
-       :bind (("C-c n l" . org-roam-buffer-toggle)
-	      ("C-c n f" . org-roam-node-find)
-	      ("C-c n i" . org-roam-node-insert)
-	      ("C-c n c" . org-roam-capture)
-	      :map org-mode-map
-	      ("C-M-i" . completion-at-point)))
+	  (use-package org-roam
+	    :ensure t
+	    :custom
+	    (org-roam-capture-templates
+	     '(("d" "default" plain
+		"%?"
+		:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+		:unnarrowed t)
+	       ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+	   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+	   :unnarrowed t)
+	       ("b" "book notes" plain
+	   "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+	   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+	   :unnarrowed t) 
+	       ))
+	    :config
+	    (setq org-roam-directory (file-truename "~/Dropbox/org-roam"))
+	    (org-roam-db-autosync-mode)
+	    (add-to-list 'display-buffer-alist
+			    '("\\*org-roam\\*"
+			      (display-buffer-in-direction)
+			      (direction . right)
+			      (window-width . 0.33)
+			      (window-height . fit-window-to-buffer)))
+	    (setq org-roam-mode-section-functions
+		     (list #'org-roam-backlinks-section
+			   #'org-roam-reflinks-section
+			   ;; #'org-roam-unlinked-references-section
+			   ))
+	    :bind (("C-c n l" . org-roam-buffer-toggle)
+		   ("C-c n f" . org-roam-node-find)
+		   ("C-c n i" . org-roam-node-insert)
+		   ("C-c n c" . org-roam-capture)
+		   :map org-mode-map
+		   ("C-M-i" . completion-at-point)))
+	  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+       (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+
+	  ;; clean up agenda views when using roam files for project management
+	  ;; sourced from: https://d12frosted.io/posts/2020-06-24-task-management-with-roam-vol2.html
+	  ;; thx!
+	  (setq org-agenda-prefix-format
+		'((agenda . " %i %-12(vulpea-agenda-category)%?-12t% s")
+		  (todo . " %i %-12(vulpea-agenda-category) ")
+		  (tags . " %i %-12(vulpea-agenda-category) ")
+		  (search . " %i %-12(vulpea-agenda-category) ")))
+	  (defun vulpea-buffer-prop-get (name)
+	    "Get a buffer property called NAME as a string."
+	    (org-with-point-at 1
+	      (when (re-search-forward (concat "^#\\+" name ": \\(.*\\)")
+				       (point-max) t)
+		(buffer-substring-no-properties
+		 (match-beginning 1)
+		 (match-end 1)))))
+
+	  (defun vulpea-agenda-category ()
+	    "Get category of item at point for agenda.
+
+	  Category is defined by one of the following items:
+
+	  - CATEGORY property
+	  - TITLE keyword
+	  - TITLE property
+	  - filename without directory and extension
+
+	  Usage example:
+
+	    (setq org-agenda-prefix-format
+		  '((agenda . \" %(vulpea-agenda-category) %?-12t %12s\")))
+
+	  Refer to `org-agenda-prefix-format' for more information."
+	    (let* ((file-name (when buffer-file-name
+				(file-name-sans-extension
+				 (file-name-nondirectory buffer-file-name))))
+		   (title (vulpea-buffer-prop-get "title"))
+		   (category (org-get-category)))
+	      (or (if (and
+		       title
+		       (string-equal category file-name))
+		      title
+		    category)
+		  "")))
+	  ;; find project nodes quickly
+	  (defun nah-org-roam-node-find-project ()
+       (interactive)
+       (org-roam-node-find
+	nil nil
+	(lambda (node)
+	  (seq-contains-p (org-roam-node-tags node) "Project"))))
+     (global-set-key (kbd "C-c n p") 'my/org-roam-node-find-project)
+     (defun nah-org-roam-node-find-project ()
+       (interactive)
+       (org-roam-node-find
+	nil nil
+	(lambda (node)
+	  (seq-contains-p (org-roam-node-tags node) "Project"))))
    #+end_src
 ** Set timer sound
    #+begin_src emacs-lisp
