@@ -627,6 +627,8 @@ Don't warn for large files.
 		   ("C-c n f" . org-roam-node-find)
 		   ("C-c n i" . org-roam-node-insert)
 		   ("C-c n c" . org-roam-capture)
+		   ("C-c n d" . org-roam-dailies-goto-today)
+		   ("C-c n D" . org-roam-dailies-find-date)
 		   :map org-mode-map
 		   ("C-M-i" . completion-at-point)))
 	  ;; If you're using a vertical completion framework, you might want a more informative completion interface
@@ -810,17 +812,11 @@ We install this package so org-mode will export HTML files with syntax highlight
 ** switch-window
    Better window switching.
    #+begin_src emacs-lisp
-     (use-package switch-window
+     (use-package ace-window
        :ensure t
-       :config
-	 (setq switch-window-input-style 'minibuffer)
-	 (setq switch-window-increase 4)
-	 (setq switch-window-threshold 2)
-	 (setq switch-window-shortcut-style 'qwerty)
-	 (setq switch-window-qwerty-shortcuts
-	     '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
        :bind
-	 ([remap other-window] . switch-window))
+	 ("C-x o" . 'ace-window))
+     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
    #+end_src
 ** hungry-delete
    Hungry delete whitespace
@@ -830,7 +826,6 @@ We install this package so org-mode will export HTML files with syntax highlight
        :config (global-hungry-delete-mode))
    #+end_src
 ** sudo-edit
-   Edit 
    #+begin_src emacs-lisp
      (use-package sudo-edit
        :ensure t
@@ -1060,7 +1055,11 @@ Allows us to surround text with e.g. quotation marks.
    #+begin_src emacs-lisp
      (use-package multiple-cursors
       :ensure t
-      :bind ("C-c q" . 'mark-next-like-this))
+      :bind
+      ("C-q >" . 'mc/mark-next-like-this)
+      ("C-q <" . 'mc/mark-previous-like-this)
+      ("C-q C-<" . 'mc/mark-all-like-this)
+      )
 #+end_src
 ** undo tree
 #+begin_src emacs-lisp
@@ -1094,18 +1093,15 @@ Allows us to surround text with e.g. quotation marks.
        :init
        (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
    #+end_src
-** expand-region
-   Expand your selection by region with C-q! 
-   #+begin_src emacs-lisp
-     (use-package expand-region
-       :ensure t
-       :bind ("C-q" . er/expand-region))
-   #+end_src
 ** magit
    Git management.
    #+begin_src emacs-lisp
      (use-package magit
        :ensure t)
+
+     ;; automagically update the modeline
+     ;; this might cause a performance issue
+     (setq auto-revert-check-vc-info t)
    #+end_src
 ** Support for markdown mode
 #+begin_src emacs-lisp
