@@ -781,15 +781,13 @@ We install this package so org-mode will export HTML files with syntax highlight
 	     '(
 	       ;;programming
 	       ("https://www.reddit.com/r/emacs.rss" emacs)
-	       ;;news
-	       ("http://feeds.bbci.co.uk/news/world/rss.xml" bbc)
-	       ("http://www.npr.org/rss/rss.php?id=1004" npr)
-	       ;;po polsku
-	       ("https://www.polsatnews.pl/rss/polska.xml" polsat)
+	       ("https://www.reddit.com/r/localllama.rss" localllama)
+	       ("https://www.reddit.com/r/oobabooga.rss" ooba)
 	       ))
        (setq-default elfeed-search-filter "@2-days-ago +unread")  
        (setq-default elfeed-search-title-max-width 100)           
        (setq-default elfeed-search-title-min-width 100))
+
    #+end_src
 ** read pubs
    #+begin_src emacs-lisp
@@ -1159,4 +1157,27 @@ To ensure a faster experience, disable version control over TRAMP:
 		       (format "\\(%s\\)\\|\\(%s\\)"
 			       vc-ignore-dir-regexp
 			       tramp-file-name-regexp))
+#+end_src
+
+* Multimedia
+
+**
+#+begin_src emacs-lisp
+  (use-package empv
+    :straight (:host github :repo "isamert/empv.el"))
+
+  (setq empv-invidious-instance "https://vid.puffyan.us/api/v1")
+
+  (add-to-list 'empv-mpv-args "--ytdl-format=best")
+
+  (with-eval-after-load 'embark (empv-embark-initialize-extra-actions))
+
+  (bind-key "C-x m" empv-map)
+
+  (defcustom empv-mpv-args `("--no-terminal" "--idle" ,(concat "--input-ipc-server=" empv-socket-file))
+    "Args used while starting mpv.
+  This should contain --input-ipc-server=`empv-socket-file', also
+  --idle is recommended for keeping your state."
+    :type '(repeat (string :tag "Command line option"))
+    :group 'empv)
 #+end_src
