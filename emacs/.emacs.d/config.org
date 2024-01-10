@@ -503,6 +503,13 @@ It makes much more sense to bind M-z to zap-up-to-char, not zap-to-char!
 #+begin_src emacs-lisp
   (bind-key "M-z" 'zap-up-to-char)
 #+end_src
+** Pixel precision mode
+When available, scroll nicely through a buffer with pixel-precision-mode. 
+#+begin_src emacs-lisp
+  (if (> (string-to-number emacs-version) 29)
+      (pixel-scroll-precision-mode))
+
+#+end_src
 * OS-specific settings
 ** Mac-specific setings
    Set modifier key.
@@ -1051,13 +1058,12 @@ Allows us to surround text with e.g. quotation marks.
 ** Multiple Cursors
    Select multiple instances of the same selection. Super useful for replacing variables.
    #+begin_src emacs-lisp
-     (use-package multiple-cursors
-      :ensure t
-      :bind
-      ("C-q >" . 'mc/mark-next-like-this)
-      ("C-q <" . 'mc/mark-previous-like-this)
-      ("C-q C-<" . 'mc/mark-all-like-this)
-      )
+     (use-package multiple-cursors)
+     (define-prefix-command 'mc-custom-prefix-map)
+     (global-set-key (kbd "C-z") 'mc-custom-prefix-map)
+     (define-key mc-custom-prefix-map (kbd ">") 'mc/mark-next-like-this)
+     (define-key mc-custom-prefix-map (kbd "<") 'mc/mark-previous-like-this)
+     (define-key mc-custom-prefix-map (kbd "C-<") 'mc/mark-all-like-this)
 #+end_src
 ** undo tree
 #+begin_src emacs-lisp
