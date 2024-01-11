@@ -1,6 +1,12 @@
 #+title: Emacs Configuration File
 #+author: Nicolai Haddal
 
+* General configuration
+#+begin_src emacs-lisp
+  (repeat-mode 1)
+  ;; don't interrupt me with native compilation warnings
+  (setq native-comp-async-report-warnings-errors nil)
+#+end_src
 * Package management
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
@@ -260,7 +266,7 @@
     ;; Optional customizations
     :custom
     (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-    (corfu-auto t)
+    ;;(corfu-auto t)
     ;; Enable auto completion
     (corfu-separator ?\s)          ;; Orderless field separator
     ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
@@ -369,10 +375,13 @@ Don't use the spacebar for auto-completion in the minibuffer.
 Place backup files in their own directory.
 #+begin_src emacs-lisp
   (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-       backup-by-copying t  ; don't delink hardlinks
-       delete-old-versions t  ; automatically delete excess backups
-       )
+       backup-by-copying t)  ; don't delink hardlinks
+  (setq delete-old-versions -1)
+  (setq version-control t)
+  (setq vc-make-backup-files t)
+  (setq auto-save-file-name-transforms '((".*" "~/.config/emacs/auto-save-list/" t)))
 #+end_src
+
 ** Display the time
    #+begin_src emacs-lisp
      (setq display-time-24hr-format t)
@@ -721,10 +730,21 @@ Don't warn for large files.
 ** Org Babel
 Configure Babel for use with Python
 #+begin_src emacs-lisp
-  ;; active Babel languages
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t)))
+    ;; active Babel languages
+    (use-package ob-ipython
+      :ensure t)
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)
+       (ipython . t)
+       (shell . t)))
+#+end_src
+
+** ob-async
+Run code blocks asynchronously.
+#+begin_src emacs-lisp
+    (use-package ob-async
+      :ensure t)
 #+end_src
 
 ** Auto bulleted lists
